@@ -36,9 +36,6 @@ void MainWindow::setupUI()
     QVBoxLayout *main_layout = new QVBoxLayout();
     main_widget->setLayout(main_layout);
 
-    this->createScriptToolBar();
-    this->createFnToolBar();
-
     LuaMessageWidget *msgWidget = new LuaMessageWidget();
 
     main_layout->addWidget(msgWidget, 1);
@@ -49,16 +46,20 @@ void MainWindow::setupUI()
 
     QDockWidget *dock1 = new QDockWidget(QString::fromUtf8("键值显示器"));
     dock1->setObjectName("dock_peditor");
-    dock1->setFeatures(QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetFloatable);
     dock1->setWidget(peditor);
     this->m_value_edit = new LuaValueEdit();
     QDockWidget *dock2 = new QDockWidget(QString::fromUtf8("值编辑器"));
     dock2->setObjectName("dock_veditor");
-    dock2->setFeatures(QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetFloatable);
     dock2->setWidget(this->m_value_edit);
 
+    this->m_docks.append(dock1);
+    this->m_docks.append(dock2);
     this->addDockWidget(Qt::RightDockWidgetArea, dock1);
     this->addDockWidget(Qt::RightDockWidgetArea, dock2);
+
+    this->createScriptToolBar();
+    this->createFnToolBar();
+    this->createMenu();
 
     this->m_lbl_script_state = new QLabel(QString::fromUtf8("未运行"));
     this->statusBar()->addWidget(this->m_lbl_script_state);
@@ -141,7 +142,9 @@ void MainWindow::createFnToolBar()
     QToolBar *toolBar = new QToolBar();
     toolBar->addActions(this->m_fn_actions);
     toolBar->setObjectName("fn_tool_bar");
+    toolBar->setWindowTitle(QString::fromUtf8("Fn 工具"));
     this->addToolBar(Qt::TopToolBarArea, toolBar);
+    this->m_tool_bars.append(toolBar);
 }
 
 void MainWindow::onFnClick()
@@ -188,7 +191,9 @@ void MainWindow::createScriptToolBar()
     toolBar->addWidget(this->m_cbx_scripts);
     toolBar->addActions(this->m_script_tool_actions);
     toolBar->setObjectName("script_tool_bar");
+    toolBar->setWindowTitle(QString::fromUtf8("脚本工具"));
     this->addToolBar(Qt::TopToolBarArea, toolBar);
+    this->m_tool_bars.append(toolBar);
     connect(this->m_run_action, SIGNAL(triggered(bool)), this, SLOT(onScriptRunClick()));
     connect(this->m_paush_action, SIGNAL(triggered(bool)), this, SLOT(onScriptPauseClick()));
     connect(this->m_edit_action, SIGNAL(triggered(bool)), this, SLOT(onScriptEditClick()));
@@ -221,4 +226,26 @@ void MainWindow::onScriptEditClick()
 {
     QString stript_file = QDir::currentPath() + "/script/" + this->m_cbx_scripts->currentText();
     QProcess::execute("edit.cmd", QStringList() << QDir::currentPath() + "/script/" << stript_file);
+}
+
+void MainWindow::createMenu()
+{
+    QMenu *menu = NULL;
+    QAction *action = NULL;
+    menu = this->menuBar()->addMenu(QString::fromUtf8("文件 (&F)"));
+    menu->addActions(this->m_script_tool_actions);
+    menu->addSeparator();
+    action = menu->addAction(QString::fromUtf8("退出 (&X)"));
+    connect(action, SIGNAL(triggered(bool)), this, SLOT(close()));
+    menu = this->menuBar()->addMenu(QString::fromUtf8("Fn 工具"));
+    menu->addActions(this->m_fn_actions);
+    menu = this->menuBar()->addMenu(QString::fromUtf8("视图 (&V)"));
+    for(int i = 0; i < this->m_docks.size(); ++i) {
+        menu->addAction(this->m_docks.at(i)->toggleViewAction());
+    }
+    menu->addSeparator();
+    for(int i = 0; i < this->m_tool_bars.size(); ++i) {
+        menu->addAction(this->m_tool_bars.at(i)->toggleViewAction());
+    }
+
 }

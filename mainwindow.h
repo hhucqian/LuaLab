@@ -31,7 +31,6 @@ private:
 
     void setupUI();
     void saveConfigFile();
-    void createActions();
     void updateUI();
 
     void createFnToolBar();
@@ -46,10 +45,13 @@ private:
     QList<QAction*> m_script_tool_actions;
     QAction* m_run_action, *m_paush_action, *m_edit_action;
 
+    void createMenu();
+
     LuaValueEdit *m_value_edit;
     QLabel *m_lbl_script_state;
 
     QList<QDockWidget*> m_docks;
+    QList<QToolBar *> m_tool_bars;
 
 public slots:
     void onLuaEvent(LuaEvent event);
