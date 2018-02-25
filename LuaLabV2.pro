@@ -17,7 +17,6 @@ RC_FILE = app.rc
 SOURCES += main.cpp\
         mainwindow.cpp \
     flowlayout.cpp \
-    llscripttool.cpp \
     luaengine.cpp \
     Lua/lapi.c \
     Lua/lauxlib.c \
@@ -67,7 +66,6 @@ SOURCES += main.cpp\
 
 HEADERS  += mainwindow.h \
     flowlayout.h \
-    llscripttool.h \
     luaengine.h \
     Lua/lapi.h \
     Lua/lauxlib.h \

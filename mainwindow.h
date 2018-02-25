@@ -8,13 +8,13 @@
 #include <QStatusBar>
 #include <QSettings>
 #include <QMainWindow>
+#include <QComboBox>
 #include <QDockWidget>
 #include <QList>
 #include <QLabel>
 #include <QAction>
 #include "luaengine.h"
 
-class LLScriptTool;
 class LuaValueEdit;
 
 class MainWindow : public QMainWindow
@@ -23,7 +23,6 @@ class MainWindow : public QMainWindow
 
 public:
     MainWindow(QWidget *parent = 0);
-    ~MainWindow();
 
 protected:
     void closeEvent(QCloseEvent *);
@@ -33,12 +32,20 @@ private:
     void setupUI();
     void saveConfigFile();
     void createActions();
+    void updateUI();
 
     void createFnToolBar();
     int m_fn_count;
     QList<QAction*> m_fn_actions;
 
-    LLScriptTool *m_script_tool;
+    QList<QString> getScriptFileNames();
+    QComboBox *m_cbx_scripts;
+    bool m_is_pause;
+    bool m_is_running;
+    void createScriptToolBar();
+    QList<QAction*> m_script_tool_actions;
+    QAction* m_run_action, *m_paush_action, *m_edit_action;
+
     LuaValueEdit *m_value_edit;
     QLabel *m_lbl_script_state;
 
@@ -49,6 +56,9 @@ public slots:
     void onLuaStateChange(bool isRunning);
     void onLuaScriptError(QString msg);
     void onFnClick();
+    void onScriptRunClick();
+    void onScriptPauseClick();
+    void onScriptEditClick();
 };
 
 #endif // MAINWINDOW_H

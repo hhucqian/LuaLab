@@ -8,10 +8,11 @@
 #include <QToolBar>
 #include <QMessageBox>
 #include <QTextEdit>
-#include <QComboBox>
+#include <QDir>
+#include <QStringList>
 #include <QDebug>
+#include <QProcess>
 
-#include "llscripttool.h"
 #include "luavalueedit.h"
 #include "luamessage/luamessagewidget.h"
 #include "propertyeditor/propertyeditor.h"
@@ -19,7 +20,7 @@
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent),
-      m_settings("config.ini", QSettings::IniFormat, this), m_fn_count(8)
+      m_settings("config.ini", QSettings::IniFormat, this), m_fn_count(8), m_is_pause(false), m_is_running(false)
 {
     this->setupUI();
     this->setWindowTitle(QString::fromUtf8("LuaLab V2.0"));
@@ -29,24 +30,13 @@ MainWindow::MainWindow(QWidget *parent)
     connect(gL, SIGNAL(LuaScriptError(QString)), this, SLOT(onLuaScriptError(QString)));
 }
 
-MainWindow::~MainWindow()
-{
-
-}
-
 void MainWindow::setupUI()
 {
-    this->m_script_tool = new LLScriptTool();
-
     QWidget *main_widget = new QWidget();
     QVBoxLayout *main_layout = new QVBoxLayout();
     main_widget->setLayout(main_layout);
 
-    QToolBar *script_tool_bar = new QToolBar();
-    script_tool_bar->addWidget(this->m_script_tool);
-    script_tool_bar->setObjectName("script_tool_bar");
-    script_tool_bar->setAllowedAreas(Qt::BottomToolBarArea | Qt::TopToolBarArea);
-    this->addToolBar(Qt::TopToolBarArea, script_tool_bar);
+    this->createScriptToolBar();
     this->createFnToolBar();
 
     LuaMessageWidget *msgWidget = new LuaMessageWidget();
@@ -78,7 +68,11 @@ void MainWindow::setupUI()
     for(int i = 0; i < this->m_docks.size(); ++i) {
         this->restoreDockWidget(this->m_docks.at(i));
     }
-    this->m_script_tool->restoreConfig(this->m_settings);
+    int index = this->m_settings.value("gui/script", 0).toInt();
+    if(index > this->m_cbx_scripts->count()) {
+        index = 0;
+    }
+    this->m_cbx_scripts->setCurrentIndex(index);
     this->m_value_edit->restoreConfig(this->m_settings);
 }
 
@@ -91,7 +85,7 @@ void MainWindow::saveConfigFile()
 {
     this->m_settings.setValue("gui/main", this->saveGeometry());
     this->m_settings.setValue("gui/state", this->saveState());
-    this->m_script_tool->saveConfig(this->m_settings);
+    this->m_settings.setValue("gui/script", this->m_cbx_scripts->currentIndex());
     this->m_value_edit->saveConfig(this->m_settings);
 }
 
@@ -116,10 +110,24 @@ void MainWindow::onLuaScriptError(QString msg)
 
 void MainWindow::onLuaStateChange(bool isRunning)
 {
-    if(isRunning) {
+    this->m_is_running = isRunning;
+    this->m_is_pause = false;
+    this->updateUI();
+}
+
+void MainWindow::updateUI()
+{
+    if(this->m_is_running) {
         this->m_lbl_script_state->setText(QString::fromUtf8("<font color='green'>运行中</font>"));
+        this->m_run_action->setText(QString::fromUtf8("停止"));
     } else {
         this->m_lbl_script_state->setText(QString::fromUtf8("未运行"));
+        this->m_run_action->setText(QString::fromUtf8("运行"));
+    }
+    if(this->m_is_pause) {
+        this->m_paush_action->setText(QString::fromUtf8("继续"));
+    } else {
+        this->m_paush_action->setText(QString::fromUtf8("暂停"));
     }
 }
 
@@ -147,4 +155,70 @@ void MainWindow::onFnClick()
             gL->putEvent(event);
         }
     }
+}
+
+QList<QString> MainWindow::getScriptFileNames()
+{
+    QList<QString> res;
+    QDir dir("script");
+    QStringList files = dir.entryList(QDir::Files);
+    QString filename;
+    foreach (filename, files) {
+        if(filename.endsWith(".lua")) {
+            res.append(filename);
+        }
+    }
+    return res;
+}
+
+void MainWindow::createScriptToolBar()
+{
+    this->m_cbx_scripts = new QComboBox();
+    this->m_cbx_scripts->addItems(this->getScriptFileNames());
+    QAction *action = new QAction(QString::fromUtf8("运行"), this);
+    this->m_script_tool_actions.append(action);
+    this->m_run_action = action;
+    action = new QAction(QString::fromUtf8("暂停"), this);
+    this->m_script_tool_actions.append(action);
+    this->m_paush_action = action;
+    action = new QAction(QString::fromUtf8("编辑"), this);
+    this->m_script_tool_actions.append(action);
+    this->m_edit_action = action;
+    QToolBar *toolBar = new QToolBar();
+    toolBar->addWidget(this->m_cbx_scripts);
+    toolBar->addActions(this->m_script_tool_actions);
+    toolBar->setObjectName("script_tool_bar");
+    this->addToolBar(Qt::TopToolBarArea, toolBar);
+    connect(this->m_run_action, SIGNAL(triggered(bool)), this, SLOT(onScriptRunClick()));
+    connect(this->m_paush_action, SIGNAL(triggered(bool)), this, SLOT(onScriptPauseClick()));
+    connect(this->m_edit_action, SIGNAL(triggered(bool)), this, SLOT(onScriptEditClick()));
+}
+
+void MainWindow::onScriptRunClick()
+{
+    if(gL->isRunning()) {
+        gL->stopScript();
+    } else {
+        gL->runLuaThread("script/" + this->m_cbx_scripts->currentText());
+    }
+}
+
+void MainWindow::onScriptPauseClick()
+{
+    if(gL->isRunning()) {
+        if(this->m_is_pause) {
+            gL->resumeScript();
+            this->m_is_pause = false;
+        } else {
+            gL->pauseScript();
+            this->m_is_pause = true;
+        }
+        this->updateUI();
+    }
+}
+
+void MainWindow::onScriptEditClick()
+{
+    QString stript_file = QDir::currentPath() + "/script/" + this->m_cbx_scripts->currentText();
+    QProcess::execute("edit.cmd", QStringList() << QDir::currentPath() + "/script/" << stript_file);
 }
