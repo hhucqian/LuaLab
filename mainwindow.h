@@ -46,6 +46,7 @@ private:
     QAction* m_run_action, *m_paush_action, *m_edit_action;
 
     void createMenu();
+    void createToolsMenu();
 
     LuaValueEdit *m_value_edit;
     QLabel *m_lbl_script_state;
@@ -61,6 +62,7 @@ public slots:
     void onScriptRunClick();
     void onScriptPauseClick();
     void onScriptEditClick();
+    void onToolActionClick();
 };
 
 #endif // MAINWINDOW_H

@@ -112,6 +112,7 @@ DISTFILES += \
     Lua/tasklib.lua \
     lualab.ico \
     app.rc \
-    edit.cmd
+    edit.cmd \
+    tools.txt
 
 LIBS += -L"$$_PRO_FILE_PWD_/zlgcan" -lControlCAN

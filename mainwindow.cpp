@@ -237,7 +237,7 @@ void MainWindow::createMenu()
     menu->addSeparator();
     action = menu->addAction(QString::fromUtf8("退出 (&X)"));
     connect(action, SIGNAL(triggered(bool)), this, SLOT(close()));
-    menu = this->menuBar()->addMenu(QString::fromUtf8("Fn 工具"));
+    menu = this->menuBar()->addMenu(QString::fromUtf8("Fn 信号"));
     menu->addActions(this->m_fn_actions);
     menu = this->menuBar()->addMenu(QString::fromUtf8("视图 (&V)"));
     for(int i = 0; i < this->m_docks.size(); ++i) {
@@ -247,5 +247,35 @@ void MainWindow::createMenu()
     for(int i = 0; i < this->m_tool_bars.size(); ++i) {
         menu->addAction(this->m_tool_bars.at(i)->toggleViewAction());
     }
+    if(QFile::exists("tools.txt"))
+    {
+        this->createToolsMenu();
+    }
+}
 
+void MainWindow::createToolsMenu()
+{
+    QMenu *menu = this->menuBar()->addMenu(QString::fromUtf8("工具 (&T)"));
+    QAction *action = NULL;
+    QFile file("tools.txt");
+    file.open(QFile::ReadOnly);
+    QString file_content = QString::fromUtf8(file.readAll());
+    file.close();
+    QStringList lines = file_content.split("\n", QString::SkipEmptyParts);
+    for(int i = 0; i < lines.size(); ++i)
+    {
+        QStringList parts = lines.at(i).split("#",  QString::SkipEmptyParts);
+        if(parts.length() > 1)
+        {
+            action = menu->addAction(QString("%1 (&%2)").arg(parts[0]).arg(i+1));
+            action->setData(parts[1]);
+            connect(action, SIGNAL(triggered(bool)), this, SLOT(onToolActionClick()));
+        }
+    }
+}
+
+void MainWindow::onToolActionClick()
+{
+    QString cmd = ((QAction *)sender())->data().toString();
+    QProcess::execute(cmd);
 }
