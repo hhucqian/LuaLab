@@ -18,7 +18,6 @@ SOURCES += main.cpp\
         mainwindow.cpp \
     flowlayout.cpp \
     llscripttool.cpp \
-    llfntool.cpp \
     luaengine.cpp \
     Lua/lapi.c \
     Lua/lauxlib.c \
@@ -69,7 +68,6 @@ SOURCES += main.cpp\
 HEADERS  += mainwindow.h \
     flowlayout.h \
     llscripttool.h \
-    llfntool.h \
     luaengine.h \
     Lua/lapi.h \
     Lua/lauxlib.h \

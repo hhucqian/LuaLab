@@ -9,9 +9,8 @@
 #include <QMessageBox>
 #include <QTextEdit>
 #include <QComboBox>
+#include <QDebug>
 
-
-#include "llfntool.h"
 #include "llscripttool.h"
 #include "luavalueedit.h"
 #include "luamessage/luamessagewidget.h"
@@ -20,7 +19,7 @@
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent),
-      m_settings("config.ini", QSettings::IniFormat, this)
+      m_settings("config.ini", QSettings::IniFormat, this), m_fn_count(8)
 {
     this->setupUI();
     this->setWindowTitle(QString::fromUtf8("LuaLab V2.0"));
@@ -37,7 +36,6 @@ MainWindow::~MainWindow()
 
 void MainWindow::setupUI()
 {
-    this->m_fn_tool = new LLFnTool(8);
     this->m_script_tool = new LLScriptTool();
 
     QWidget *main_widget = new QWidget();
@@ -49,11 +47,7 @@ void MainWindow::setupUI()
     script_tool_bar->setObjectName("script_tool_bar");
     script_tool_bar->setAllowedAreas(Qt::BottomToolBarArea | Qt::TopToolBarArea);
     this->addToolBar(Qt::TopToolBarArea, script_tool_bar);
-    QToolBar *fn_tool_bar = new QToolBar();
-    fn_tool_bar->addWidget(this->m_fn_tool);
-    fn_tool_bar->setObjectName("fn_tool_bar");
-    fn_tool_bar->setAllowedAreas(Qt::BottomToolBarArea | Qt::TopToolBarArea);
-    this->insertToolBar(script_tool_bar, fn_tool_bar);
+    this->createFnToolBar();
 
     LuaMessageWidget *msgWidget = new LuaMessageWidget();
 
@@ -103,8 +97,15 @@ void MainWindow::saveConfigFile()
 
 void MainWindow::onLuaEvent(LuaEvent event)
 {
-    if(event.Type == LuaEvent::EVENT_SET_TITLE) {
+    switch (event.Type) {
+    case LuaEvent::EVENT_SET_TITLE:
         this->setWindowTitle(QString("LuaLab V2.0 - %1").arg(event.ExtraString));
+        break;
+    case LuaEvent::EVENT_SET_FN_TEXT:
+        this->m_fn_actions.at(event.ExtraInt -1)->setText(event.ExtraString);
+        break;
+    default:
+        break;
     }
 }
 
@@ -119,5 +120,31 @@ void MainWindow::onLuaStateChange(bool isRunning)
         this->m_lbl_script_state->setText(QString::fromUtf8("<font color='green'>运行中</font>"));
     } else {
         this->m_lbl_script_state->setText(QString::fromUtf8("未运行"));
+    }
+}
+
+void MainWindow::createFnToolBar()
+{
+    for(int i = 0; i < this->m_fn_count; ++i) {
+        QAction *item = new QAction(QString("F%1").arg(i + 1), this);
+        this->m_fn_actions.append(item);
+        connect(item, SIGNAL(triggered(bool)), this, SLOT(onFnClick()));
+    }
+    QToolBar *toolBar = new QToolBar();
+    toolBar->addActions(this->m_fn_actions);
+    toolBar->setObjectName("fn_tool_bar");
+    this->addToolBar(Qt::TopToolBarArea, toolBar);
+}
+
+void MainWindow::onFnClick()
+{
+    for(int i = 0; i < this->m_fn_count; ++i) {
+        if(sender() == this->m_fn_actions.at(i)) {
+            LuaEvent event;
+            event.Type = LuaEvent::EVENT_FUN;
+            event.ExtraType = LuaEvent::EXTRA_INT;
+            event.ExtraInt = i + 1;
+            gL->putEvent(event);
+        }
     }
 }

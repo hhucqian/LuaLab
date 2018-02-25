@@ -11,9 +11,9 @@
 #include <QDockWidget>
 #include <QList>
 #include <QLabel>
+#include <QAction>
 #include "luaengine.h"
 
-class LLFnTool;
 class LLScriptTool;
 class LuaValueEdit;
 
@@ -32,8 +32,12 @@ private:
 
     void setupUI();
     void saveConfigFile();
+    void createActions();
 
-    LLFnTool *m_fn_tool;
+    void createFnToolBar();
+    int m_fn_count;
+    QList<QAction*> m_fn_actions;
+
     LLScriptTool *m_script_tool;
     LuaValueEdit *m_value_edit;
     QLabel *m_lbl_script_state;
@@ -44,6 +48,7 @@ public slots:
     void onLuaEvent(LuaEvent event);
     void onLuaStateChange(bool isRunning);
     void onLuaScriptError(QString msg);
+    void onFnClick();
 };
 
 #endif // MAINWINDOW_H

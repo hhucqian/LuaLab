@@ -17,7 +17,7 @@ public:
         EVENT_PAUSE,
         EVENT_SET_TEXT,
         EVENT_SET_TITLE,
-        EVENT_SET_FN,
+        EVENT_SET_FN_TEXT,
         EVENT_END
     };
     enum LuaEventExraType {

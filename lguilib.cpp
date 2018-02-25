@@ -72,7 +72,7 @@ static int gui_set_title(lua_State* L)
 static int gui_set_fn_title(lua_State* L)
 {
     static LuaEvent res;
-    res.Type = LuaEvent::EVENT_SET_FN;
+    res.Type = LuaEvent::EVENT_SET_FN_TEXT;
     res.ExtraInt = luaL_checkinteger(L, 1);
     res.ExtraString = QString::fromUtf8(luaL_checkstring(L, 2));
     gL->triggerEvent(res);
@@ -175,7 +175,7 @@ LUAMOD_API int luaopen_gui (lua_State *L) {
   lua_pushinteger(L, LuaEvent::EVENT_SET_TITLE);
   lua_settable(L, -3);
   lua_pushstring(L, "EVENT_SET_FN");
-  lua_pushinteger(L, LuaEvent::EVENT_SET_FN);
+  lua_pushinteger(L, LuaEvent::EVENT_SET_FN_TEXT);
   lua_settable(L, -3);
   lua_pushstring(L, "EXTRA_NONE");
   lua_pushinteger(L, LuaEvent::EXTRA_NONE);
