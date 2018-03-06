@@ -277,5 +277,5 @@ void MainWindow::createToolsMenu()
 void MainWindow::onToolActionClick()
 {
     QString cmd = ((QAction *)sender())->data().toString();
-    QProcess::execute(cmd);
+    QProcess::startDetached(cmd);
 }
