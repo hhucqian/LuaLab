@@ -262,14 +262,22 @@ void MainWindow::createToolsMenu()
     QString file_content = QString::fromUtf8(file.readAll());
     file.close();
     QStringList lines = file_content.split("\n", QString::SkipEmptyParts);
+    int index = 1;
     for(int i = 0; i < lines.size(); ++i)
     {
         QStringList parts = lines.at(i).split("#",  QString::SkipEmptyParts);
         if(parts.length() > 1)
         {
-            action = menu->addAction(QString("%1 (&%2)").arg(parts[0]).arg(i+1));
+            if(index < 10) {
+                action = menu->addAction(QString("%1 (&%2)").arg(parts[0]).arg(index));
+            } else if('Z' - 'A' - index + 10 >= 0) {
+                action = menu->addAction(QString("%1 (&%2)").arg(parts[0]).arg((char)('A' + index - 10)));
+            } else {
+                action = menu->addAction(QString("%1").arg(parts[0]));
+            }
             action->setData(parts[1]);
             connect(action, SIGNAL(triggered(bool)), this, SLOT(onToolActionClick()));
+            ++index;
         }
     }
 }
