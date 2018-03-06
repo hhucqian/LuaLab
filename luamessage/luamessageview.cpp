@@ -4,7 +4,7 @@
 
 LuaMessageView::LuaMessageView(QWidget *parent) : QListView(parent)
 {
-
+    setFont(QFont("Consolas, 'Courier New', monospace"));
 }
 
 void LuaMessageView::keyPressEvent(QKeyEvent *event)
