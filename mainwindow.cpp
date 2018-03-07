@@ -24,10 +24,12 @@ MainWindow::MainWindow(QWidget *parent)
 {
     this->setupUI();
     this->setWindowTitle(QString::fromUtf8("LuaLab V2.0"));
+    this->m_fs_watcher.addPath("script/");
     qRegisterMetaType<LuaEvent>("LuaEvent");
     connect(gL, SIGNAL(GetLuaEvent(LuaEvent)), this, SLOT(onLuaEvent(LuaEvent)));
     connect(gL, SIGNAL(LuaStateChange(bool)), this, SLOT(onLuaStateChange(bool)));
     connect(gL, SIGNAL(LuaScriptError(QString)), this, SLOT(onLuaScriptError(QString)));
+    connect(&this->m_fs_watcher, SIGNAL(directoryChanged(QString)), this, SLOT(onScriptChanged()));
 }
 
 void MainWindow::setupUI()
@@ -286,4 +288,10 @@ void MainWindow::onToolActionClick()
 {
     QString cmd = ((QAction *)sender())->data().toString();
     QProcess::startDetached(cmd);
+}
+
+void MainWindow::onScriptChanged()
+{
+    this->m_cbx_scripts->clear();
+    this->m_cbx_scripts->addItems(this->getScriptFileNames());
 }

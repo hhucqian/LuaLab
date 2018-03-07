@@ -13,6 +13,7 @@
 #include <QList>
 #include <QLabel>
 #include <QAction>
+#include <QFileSystemWatcher>
 #include "luaengine.h"
 
 class LuaValueEdit;
@@ -54,6 +55,8 @@ private:
     QList<QDockWidget*> m_docks;
     QList<QToolBar *> m_tool_bars;
 
+    QFileSystemWatcher m_fs_watcher;
+
 public slots:
     void onLuaEvent(LuaEvent event);
     void onLuaStateChange(bool isRunning);
@@ -63,6 +66,7 @@ public slots:
     void onScriptPauseClick();
     void onScriptEditClick();
     void onToolActionClick();
+    void onScriptChanged();
 };
 
 #endif // MAINWINDOW_H
