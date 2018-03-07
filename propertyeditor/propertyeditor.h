@@ -14,7 +14,7 @@ public:
 
 public slots:
     void onSetKV(QString key, QString value);
-    void onLuaStateChange(bool isRunning);
+    void onLuaStateChange(QString, bool isRunning);
 
 protected:
 

@@ -59,7 +59,7 @@ private:
 
 public slots:
     void onLuaEvent(LuaEvent event);
-    void onLuaStateChange(bool isRunning);
+    void onLuaStateChange(QString, bool isRunning);
     void onLuaScriptError(QString msg);
     void onFnClick();
     void onScriptRunClick();

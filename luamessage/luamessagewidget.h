@@ -7,6 +7,7 @@
 #include <QCheckBox>
 #include <QLayout>
 #include <QListView>
+#include <QVector>
 #include "luamessagelistmodel.h"
 
 class LuaMessageWidget : public QWidget
@@ -28,12 +29,14 @@ private:
     QListView *m_list_view;
 
     QList<int> getShowTypes();
+    QHash<QString, QList<bool>*> m_check_state;
+    QString m_current_script_id;
 
 public slots:
     void onGetMsg(int type, QString msg);
     void onAddMsgType(QString name);
     void onCbxClick(bool checked);
-    void onLuaStateChange(bool isRunning);
+    void onLuaStateChange(QString id, bool isRunning);
 };
 
 #endif // LUAMESSAGEWIDGET_H

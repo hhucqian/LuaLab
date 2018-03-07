@@ -40,22 +40,23 @@ void LuaEngine::triggerEvent(LuaEvent &event)
 QThread* LuaEngine::runLuaThread(QString filename)
 {
     if(this->m_lua_thread == NULL) {
+        this->m_script_name = filename;
         this->m_events.clear();
         this->newLuaThread();
         this->m_lua_thread = new LuaThread(this->m_L, filename);
         this->m_lua_thread->start(QThread::HighestPriority);
         connect(this->m_lua_thread, SIGNAL(finished()), this, SLOT(onLuaThreadFinished()));
-        emit LuaStateChange(true);
+        emit LuaStateChange(this->m_script_name, true);
     }
     return this->m_lua_thread;
 }
 
 void LuaEngine::onLuaThreadFinished()
 {
-    delete this->m_lua_thread;
+    this->m_lua_thread->deleteLater();
     this->m_lua_thread = NULL;
     this->closeLuaThread();
-    emit LuaStateChange(false);
+    emit LuaStateChange(this->m_script_name, false);
 }
 
 void LuaEngine::stopScript()

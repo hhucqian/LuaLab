@@ -38,7 +38,7 @@ void LuaMessageWidget::setupUI()
 
     connect(gL, SIGNAL(PushMsg(int,QString)), this, SLOT(onGetMsg(int,QString)));
     connect(gL, SIGNAL(AddMsgType(QString)), this, SLOT(onAddMsgType(QString)));
-    connect(gL, SIGNAL(LuaStateChange(bool)), this, SLOT(onLuaStateChange(bool)));
+    connect(gL, SIGNAL(LuaStateChange(QString, bool)), this, SLOT(onLuaStateChange(QString, bool)));
     connect(cbx, SIGNAL(clicked(bool)), this, SLOT(onCbxClick(bool)));
 }
 
@@ -58,6 +58,10 @@ void LuaMessageWidget::onAddMsgType(QString name)
         this->m_type_layout->addWidget(cbx);
         this->m_model.setShowTypes(this->getShowTypes());
         connect(cbx, SIGNAL(clicked(bool)), this, SLOT(onCbxClick(bool)));
+
+        for(int i = 0; i < this->m_msg_types.size() && i < this->m_check_state.value(this->m_current_script_id)->size(); ++i) {
+            this->m_type_cbx.at(i)->setChecked(this->m_check_state.value(this->m_current_script_id)->at(i));
+        }
     }
 }
 
@@ -82,6 +86,7 @@ void LuaMessageWidget::onCbxClick(bool checked)
             this->m_type_cbx.at(0)->setCheckState(Qt::PartiallyChecked);
         }
     }
+
     this->m_model.setShowTypes(this->getShowTypes());
 }
 
@@ -99,8 +104,12 @@ QList<int> LuaMessageWidget::getShowTypes()
     return res;
 }
 
-void LuaMessageWidget::onLuaStateChange(bool isRunning)
+void LuaMessageWidget::onLuaStateChange(QString id, bool isRunning)
 {
+    this->m_current_script_id = id;
+    if(!this->m_check_state.contains(id)) {
+        this->m_check_state.insert(id, new QList<bool>());
+    }
     if(isRunning) {
         this->m_model.clearDataAndTypes();
         while(this->m_msg_types.size() > 1) {
@@ -110,7 +119,11 @@ void LuaMessageWidget::onLuaStateChange(bool isRunning)
             this->m_type_layout->removeWidget(this->m_type_cbx.last());
             this->m_type_cbx.last()->deleteLater();
             this->m_type_cbx.removeLast();
-
+        }
+    } else {
+        this->m_check_state.value(this->m_current_script_id)->clear();
+        for(int i = 0; i < this->m_type_cbx.size(); ++i) {
+            this->m_check_state.value(this->m_current_script_id)->append(this->m_type_cbx[i]->isChecked());
         }
     }
 }

@@ -10,7 +10,7 @@ PropertyEditor::PropertyEditor(QWidget *parent) : QWidget(parent)
 {
     this->setupUI();
     connect(gL, SIGNAL(SetKVEvent(QString,QString)), this, SLOT(onSetKV(QString,QString)));
-    connect(gL, SIGNAL(LuaStateChange(bool)), this, SLOT(onLuaStateChange(bool)));
+    connect(gL, SIGNAL(LuaStateChange(QString, bool)), this, SLOT(onLuaStateChange(QString, bool)));
 }
 
 void PropertyEditor::setupUI()
@@ -36,7 +36,7 @@ void PropertyEditor::onSetKV(QString key, QString value)
     this->m_model->setKV(key, value);
 }
 
-void PropertyEditor::onLuaStateChange(bool isRunning)
+void PropertyEditor::onLuaStateChange(QString, bool isRunning)
 {
     if(isRunning)
     {

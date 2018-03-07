@@ -37,7 +37,7 @@ public:
 
 signals:
     void GetLuaEvent(LuaEvent event);
-    void LuaStateChange(bool isRunning);
+    void LuaStateChange(QString scriptname, bool isRunning);
     void PushMsg(int type, QString msg);
     void AddMsgType(QString name);
     void LuaScriptError(QString msg);
@@ -50,6 +50,7 @@ private:
 
     lua_State* m_L;
     LuaThread *m_lua_thread;
+    QString m_script_name;
 
 public slots:
     void onLuaThreadFinished();

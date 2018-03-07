@@ -27,7 +27,7 @@ MainWindow::MainWindow(QWidget *parent)
     this->m_fs_watcher.addPath("script/");
     qRegisterMetaType<LuaEvent>("LuaEvent");
     connect(gL, SIGNAL(GetLuaEvent(LuaEvent)), this, SLOT(onLuaEvent(LuaEvent)));
-    connect(gL, SIGNAL(LuaStateChange(bool)), this, SLOT(onLuaStateChange(bool)));
+    connect(gL, SIGNAL(LuaStateChange(QString, bool)), this, SLOT(onLuaStateChange(QString, bool)));
     connect(gL, SIGNAL(LuaScriptError(QString)), this, SLOT(onLuaScriptError(QString)));
     connect(&this->m_fs_watcher, SIGNAL(directoryChanged(QString)), this, SLOT(onScriptChanged()));
 }
@@ -111,7 +111,7 @@ void MainWindow::onLuaScriptError(QString msg)
    QMessageBox::warning(this, QString::fromUtf8("脚本错误"), msg);
 }
 
-void MainWindow::onLuaStateChange(bool isRunning)
+void MainWindow::onLuaStateChange(QString, bool isRunning)
 {
     this->m_is_running = isRunning;
     this->m_is_pause = false;

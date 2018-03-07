@@ -8,7 +8,7 @@
 LuaValueEdit::LuaValueEdit(QWidget *parent) : QWidget(parent)
 {
     this->setupUI();
-    connect(gL, SIGNAL(LuaStateChange(bool)), this, SLOT(onLuaStateChange(bool)));
+    connect(gL, SIGNAL(LuaStateChange(QString, bool)), this, SLOT(onLuaStateChange(QString,bool)));
 }
 
 void LuaValueEdit::setupUI()
@@ -55,7 +55,7 @@ void LuaValueEdit::onTextChangedEvent()
     gL->putEvent(event);
 }
 
-void LuaValueEdit::onLuaStateChange(bool isRunning)
+void LuaValueEdit::onLuaStateChange(QString, bool isRunning)
 {
     if(isRunning)
     {

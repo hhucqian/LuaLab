@@ -21,7 +21,7 @@ signals:
 
 public slots:
     void onTextChangedEvent();
-    void onLuaStateChange(bool isRunning);
+    void onLuaStateChange(QString, bool isRunning);
 };
 
 #endif // LUAVALUEEDIT_H
