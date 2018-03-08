@@ -22,6 +22,7 @@ public:
     void setShowTypes(const QList<int> &list);
     void clearDataAndTypes();
     Qt::ItemFlags flags(const QModelIndex &index) const;
+    void saveToFile();
 
 protected:
     void timerEvent(QTimerEvent * event );

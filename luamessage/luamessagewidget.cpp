@@ -1,6 +1,7 @@
 #include "luamessagewidget.h"
 #include <QDebug>
 #include <QListView>
+#include <QPushButton>
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 #include "../luaengine.h"
@@ -18,6 +19,7 @@ void LuaMessageWidget::setupUI()
 
     QVBoxLayout *main_layout = new QVBoxLayout();
 
+    QHBoxLayout *tool_layout = new QHBoxLayout();
     FlowLayout *type_layout = new FlowLayout();
     QCheckBox *cbx = new QCheckBox();
     cbx->setText(this->m_msg_types.at(0));
@@ -31,7 +33,13 @@ void LuaMessageWidget::setupUI()
     this->m_list_view->setAlternatingRowColors(true);
     this->m_list_view->setSelectionMode(QAbstractItemView::ExtendedSelection);
 
-    main_layout->addLayout(type_layout);
+    QPushButton *btn_save = new QPushButton();
+    btn_save->setText(QString::fromUtf8("保存"));
+
+    tool_layout->addLayout(type_layout, 2);
+    tool_layout->addStretch(1);
+    tool_layout->addWidget(btn_save);
+    main_layout->addLayout(tool_layout);
     main_layout->addWidget(this->m_list_view);
     this->setLayout(main_layout);
     this->m_type_layout = type_layout;
@@ -40,6 +48,7 @@ void LuaMessageWidget::setupUI()
     connect(gL, SIGNAL(AddMsgType(QString)), this, SLOT(onAddMsgType(QString)));
     connect(gL, SIGNAL(LuaStateChange(QString, bool)), this, SLOT(onLuaStateChange(QString, bool)));
     connect(cbx, SIGNAL(clicked(bool)), this, SLOT(onCbxClick(bool)));
+    connect(btn_save, SIGNAL(clicked(bool)), this, SLOT(onSaveClick()));
 }
 
 void LuaMessageWidget::onGetMsg(int type, QString msg)
@@ -126,4 +135,9 @@ void LuaMessageWidget::onLuaStateChange(QString id, bool isRunning)
             this->m_check_state.value(this->m_current_script_id)->append(this->m_type_cbx[i]->isChecked());
         }
     }
+}
+
+void LuaMessageWidget::onSaveClick()
+{
+    this->m_model.saveToFile();
 }

@@ -37,6 +37,7 @@ public slots:
     void onAddMsgType(QString name);
     void onCbxClick(bool checked);
     void onLuaStateChange(QString id, bool isRunning);
+    void onSaveClick();
 };
 
 #endif // LUAMESSAGEWIDGET_H

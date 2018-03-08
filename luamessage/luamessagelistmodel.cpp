@@ -1,6 +1,8 @@
 #include "luamessagelistmodel.h"
 #include <QBrush>
 #include <QColor>
+#include <QFile>
+#include <QFileDialog>
 
 LuaMessageListModel::LuaMessageListModel(QObject *parent) : QAbstractListModel(parent),m_max_row_count(500), m_need_reset(false)
 {
@@ -79,4 +81,19 @@ void LuaMessageListModel::clearDataAndTypes()
 Qt::ItemFlags LuaMessageListModel::flags(const QModelIndex &index) const
 {
     return QAbstractListModel::flags(index) | Qt::ItemIsEditable;
+}
+
+void LuaMessageListModel::saveToFile()
+{
+    QString name = QFileDialog::getSaveFileName(0, QString::fromUtf8("保存"), "", "txt (*.txt);;all file (*.*)");
+    if(name.isEmpty()) {
+        return;
+    }
+    QFile file(name);
+    file.open(QFile::WriteOnly | QFile::Truncate | QFile::Text);
+    QReadLocker locker(&this->m_rw_lock);
+    for(int i = 0; i < this->m_all_msg.size(); ++i) {
+        file.write((this->m_all_msg.at(i).Msg() + "\n").toUtf8());
+    }
+    file.close();
 }
