@@ -92,8 +92,8 @@ void LuaMessageListModel::saveToFile()
     QFile file(name);
     file.open(QFile::WriteOnly | QFile::Truncate | QFile::Text);
     QReadLocker locker(&this->m_rw_lock);
-    for(int i = 0; i < this->m_all_msg.size(); ++i) {
-        file.write((this->m_all_msg.at(i).Msg() + "\n").toUtf8());
+    for(int i = 0; i < this->m_show_msg.size(); ++i) {
+        file.write((this->m_show_msg.at(i)->Msg() + "\n").toUtf8());
     }
     file.close();
 }
