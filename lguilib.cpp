@@ -138,6 +138,159 @@ static int gui_set_kv(lua_State *L) {
     return 0;
 }
 
+
+static int gui_getS16(lua_State *L)
+{
+    char b1, b2;
+    short res;
+    char* p = (char*)&res;
+    b1 = (char)luaL_checkinteger(L, 1);
+    b2 = (char)luaL_checkinteger(L, 2);
+    memcpy(p, &b1, 1);
+    memcpy(p+1, &b2, 1);
+    lua_pushinteger(L, res);
+    return 1;
+}
+
+static int gui_getU16(lua_State *L)
+{
+    char b1, b2;
+    unsigned short res;
+    char* p = (char*)&res;
+    b1 = (char)luaL_checkinteger(L, 1);
+    b2 = (char)luaL_checkinteger(L, 2);
+    memcpy(p, &b1, 1);
+    memcpy(p+1, &b2, 1);
+    lua_pushinteger(L, res);
+    return 1;
+}
+
+static int gui_getS32(lua_State *L)
+{
+    char b1, b2, b3, b4;
+    int res;
+    char* p = (char*)&res;
+    b1 = (char)luaL_checkinteger(L, 1);
+    b2 = (char)luaL_checkinteger(L, 2);
+    b3 = (char)luaL_checkinteger(L, 3);
+    b4 = (char)luaL_checkinteger(L, 4);
+    memcpy(p, &b1, 1);
+    memcpy(p+1, &b2, 1);
+    memcpy(p+2, &b3, 1);
+    memcpy(p+3, &b4, 1);
+    lua_pushinteger(L, res);
+    return 1;
+}
+
+static int gui_getU32(lua_State *L)
+{
+    char b1, b2, b3, b4;
+    unsigned int res;
+    char* p = (char*)&res;
+    b1 = (char)luaL_checkinteger(L, 1);
+    b2 = (char)luaL_checkinteger(L, 2);
+    b3 = (char)luaL_checkinteger(L, 3);
+    b4 = (char)luaL_checkinteger(L, 4);
+    memcpy(p, &b1, 1);
+    memcpy(p+1, &b2, 1);
+    memcpy(p+2, &b3, 1);
+    memcpy(p+3, &b4, 1);
+    lua_pushinteger(L, res);
+    return 1;
+}
+
+static int gui_getF32(lua_State *L)
+{
+    char b1, b2, b3, b4;
+    float res;
+    char* p = (char*)&res;
+    b1 = (char)luaL_checkinteger(L, 1);
+    b2 = (char)luaL_checkinteger(L, 2);
+    b3 = (char)luaL_checkinteger(L, 3);
+    b4 = (char)luaL_checkinteger(L, 4);
+    memcpy(p, &b1, 1);
+    memcpy(p+1, &b2, 1);
+    memcpy(p+2, &b3, 1);
+    memcpy(p+3, &b4, 1);
+    lua_pushnumber(L, res);
+    return 1;
+}
+
+static int gui_transS32(lua_State *L)
+{
+    int value = 0;
+    value = luaL_checknumber(L, 1);
+
+    lua_createtable(L, 4, 0);
+    lua_pushinteger(L, 1);
+    lua_pushinteger(L, value & 0xFF);
+    lua_rawset(L, -3);
+    lua_pushinteger(L, 2);
+    lua_pushinteger(L, value >> 8 & 0xFF);
+    lua_rawset(L, -3);
+    lua_pushinteger(L, 3);
+    lua_pushinteger(L, value >> 16 & 0xFF);
+    lua_rawset(L, -3);
+    lua_pushinteger(L, 4);
+    lua_pushinteger(L, value >> 24 & 0xFF);
+    lua_rawset(L, -3);
+    return 1;
+}
+
+static int gui_transS16(lua_State *L)
+{
+    short value = 0;
+    value = luaL_checknumber(L, 1);
+
+    lua_createtable(L, 4, 0);
+    lua_pushinteger(L, 1);
+    lua_pushinteger(L, value & 0xFF);
+    lua_rawset(L, -3);
+    lua_pushinteger(L, 2);
+    lua_pushinteger(L, value >> 8 & 0xFF);
+    lua_rawset(L, -3);
+    return 1;
+}
+
+static int gui_transU16(lua_State *L)
+{
+    unsigned short value = 0;
+    value = luaL_checknumber(L, 1);
+
+    lua_createtable(L, 4, 0);
+    lua_pushinteger(L, 1);
+    lua_pushinteger(L, value & 0xFF);
+    lua_rawset(L, -3);
+    lua_pushinteger(L, 2);
+    lua_pushinteger(L, value >> 8 & 0xFF);
+    lua_rawset(L, -3);
+    return 1;
+}
+
+static int gui_transF32(lua_State *L)
+{
+    float fvalue = 0;
+    int value = 0;
+    fvalue = luaL_checknumber(L, 1);
+    memcpy(&value, &fvalue, 4);
+    lua_createtable(L, 4, 0);
+    lua_pushinteger(L, 1);
+    lua_pushinteger(L, value & 0xFF);
+    lua_rawset(L, -3);
+    lua_pushinteger(L, 2);
+    lua_pushinteger(L, value >> 8 & 0xFF);
+    lua_rawset(L, -3);
+    lua_pushinteger(L, 3);
+    lua_pushinteger(L, value >> 16 & 0xFF);
+    lua_rawset(L, -3);
+    lua_pushinteger(L, 4);
+    lua_pushinteger(L, value >> 24 & 0xFF);
+    lua_rawset(L, -3);
+    return 1;
+}
+
+
+
 static const luaL_Reg guilib[] = {
     {"getmstime", gui_getmstime},
     {"sleep", gui_sleep},
@@ -150,6 +303,15 @@ static const luaL_Reg guilib[] = {
     {"addmsgtype", gui_add_msg_type},
     {"push", gui_push_msg},
     {"setkv", gui_set_kv},
+    {"getS16", gui_getS16},
+    {"getU16", gui_getU16},
+    {"getS32", gui_getS32},
+    {"getU32", gui_getU32},
+    {"getF32", gui_getF32},
+    {"transS32", gui_transS32},
+    {"transS16", gui_transS16},
+    {"transU16", gui_transU16},
+    {"transF32", gui_transF32},
     {NULL, NULL}
 };
 
