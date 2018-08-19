@@ -67,6 +67,9 @@ public slots:
     void onScriptEditClick();
     void onToolActionClick();
     void onScriptChanged();
+    void onFontBigClick();
+    void onFontMidClick();
+    void onFontNormalClick();
 };
 
 #endif // MAINWINDOW_H

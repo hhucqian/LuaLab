@@ -12,6 +12,7 @@
 #include <QStringList>
 #include <QDebug>
 #include <QProcess>
+#include <QApplication>
 
 #include "luavalueedit.h"
 #include "luamessage/luamessagewidget.h"
@@ -237,6 +238,13 @@ void MainWindow::createMenu()
     menu = this->menuBar()->addMenu(QString::fromUtf8("文件 (&F)"));
     menu->addActions(this->m_script_tool_actions);
     menu->addSeparator();
+    action = menu->addAction(QString::fromUtf8("大"));
+    connect(action, SIGNAL(triggered(bool)), this, SLOT(onFontBigClick()));
+    action = menu->addAction(QString::fromUtf8("中"));
+    connect(action, SIGNAL(triggered(bool)), this, SLOT(onFontMidClick()));
+    action = menu->addAction(QString::fromUtf8("正常"));
+    connect(action, SIGNAL(triggered(bool)), this, SLOT(onFontNormalClick()));
+    menu->addSeparator();
     action = menu->addAction(QString::fromUtf8("退出 (&X)"));
     connect(action, SIGNAL(triggered(bool)), this, SLOT(close()));
     menu = this->menuBar()->addMenu(QString::fromUtf8("Fn 信号"));
@@ -295,3 +303,19 @@ void MainWindow::onScriptChanged()
     this->m_cbx_scripts->clear();
     this->m_cbx_scripts->addItems(this->getScriptFileNames());
 }
+
+void MainWindow::onFontBigClick()
+{
+    qApp->setStyleSheet("*{font-size : 30px;}");
+}
+
+void MainWindow::onFontMidClick()
+{
+    qApp->setStyleSheet("*{font-size : 20px;}");
+}
+
+void MainWindow::onFontNormalClick()
+{
+    qApp->setStyleSheet("");
+}
+
