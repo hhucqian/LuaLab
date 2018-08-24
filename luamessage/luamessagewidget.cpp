@@ -58,19 +58,17 @@ void LuaMessageWidget::onGetMsg(int type, QString msg)
 
 void LuaMessageWidget::onAddMsgType(QString name)
 {
-    if(!this->m_msg_types.contains(name)) {
-        this->m_msg_types.append(name);
-        QCheckBox *cbx = new QCheckBox();
-        cbx->setText(name);
-        cbx->setCheckState(Qt::Checked);
-        this->m_type_cbx.append(cbx);
-        this->m_type_layout->addWidget(cbx);
-        this->m_model.setShowTypes(this->getShowTypes());
-        connect(cbx, SIGNAL(clicked(bool)), this, SLOT(onCbxClick(bool)));
+    this->m_msg_types.append(name);
+    QCheckBox *cbx = new QCheckBox();
+    cbx->setText(name);
+    cbx->setCheckState(Qt::Checked);
+    this->m_type_cbx.append(cbx);
+    this->m_type_layout->addWidget(cbx);
+    this->m_model.setShowTypes(this->getShowTypes());
+    connect(cbx, SIGNAL(clicked(bool)), this, SLOT(onCbxClick(bool)));
 
-        for(int i = 0; i < this->m_msg_types.size() && i < this->m_check_state.value(this->m_current_script_id)->size(); ++i) {
-            this->m_type_cbx.at(i)->setChecked(this->m_check_state.value(this->m_current_script_id)->at(i));
-        }
+    for(int i = 0; i < this->m_msg_types.size() && i < this->m_check_state.value(this->m_current_script_id)->size(); ++i) {
+        this->m_type_cbx.at(i)->setChecked(this->m_check_state.value(this->m_current_script_id)->at(i));
     }
 }
 

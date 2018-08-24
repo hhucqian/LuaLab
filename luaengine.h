@@ -35,6 +35,8 @@ public:
     void pauseScript();
     void resumeScript();
 
+    int getNextMsgTypeCount();
+
 signals:
     void GetLuaEvent(LuaEvent event);
     void LuaStateChange(QString scriptname, bool isRunning);
@@ -47,6 +49,7 @@ private:
     QList<LuaEvent> m_events;
     lua_State* newLuaThread();
     void closeLuaThread(){ lua_close(this->m_L); this->m_L = NULL;}
+    int m_msg_type_count;
 
     lua_State* m_L;
     LuaThread *m_lua_thread;

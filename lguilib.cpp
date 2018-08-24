@@ -128,7 +128,8 @@ static int gui_push_msg(lua_State *L) {
 static int gui_add_msg_type(lua_State *L) {
     const char *name = luaL_checkstring(L, 1);
     gL->triggerAddMsgType(name);
-    return 0;
+    lua_pushinteger(L, gL->getNextMsgTypeCount());
+    return 1;
 }
 
 static int gui_set_kv(lua_State *L) {

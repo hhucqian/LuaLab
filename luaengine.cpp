@@ -8,6 +8,7 @@ LuaEngine::LuaEngine(QObject *parent) : QObject(parent)
 {
     this->m_L = NULL;
     this->m_lua_thread = NULL;
+    this->m_msg_type_count = 0;
 }
 
 LuaEngine* LuaEngine::Instance()
@@ -45,6 +46,7 @@ QThread* LuaEngine::runLuaThread(QString filename)
         this->newLuaThread();
         this->m_lua_thread = new LuaThread(this->m_L, filename);
         this->m_lua_thread->start(QThread::HighestPriority);
+        this->m_msg_type_count = 0;
         connect(this->m_lua_thread, SIGNAL(finished()), this, SLOT(onLuaThreadFinished()));
         emit LuaStateChange(this->m_script_name, true);
     }
@@ -103,4 +105,10 @@ void LuaEngine::triggerLuaScriptError(const char *msg)
 void LuaEngine::triggerSetKV(const char *key, const char *value)
 {
     emit SetKVEvent(QString::fromUtf8(key), QString::fromUtf8(value));
+}
+
+int LuaEngine::getNextMsgTypeCount()
+{
+    ++this->m_msg_type_count;
+    return this->m_msg_type_count;
 }
