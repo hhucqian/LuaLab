@@ -80,13 +80,14 @@ function _task.mt:run_loop(delay)
         for i, v in ipairs(self.tasks) do
             if self.is_pause == false then
                 if coroutine.status(v) == "dead" then
-                    self.delete_task(i)
+                    self:delete_task(i)
                     break
                 end
                 err, msg = coroutine.resume(v)
                 if err == false then error(msg) end
             end
         end
+        if #self.tasks == 0 then break end
         if delay > 0 then gui.msleep(delay) end
     end
     if self.fn_stop ~= nil then self.fn_stop() end
