@@ -117,6 +117,9 @@ void MainWindow::onLuaStateChange(QString, bool isRunning)
     this->m_is_running = isRunning;
     this->m_is_pause = false;
     this->updateUI();
+    for(int i = 0; i < this->m_fn_count; ++i) {
+        this->m_fn_actions.at(i)->setText(QString("F%1").arg(i + 1));
+    }
 }
 
 void MainWindow::updateUI()
