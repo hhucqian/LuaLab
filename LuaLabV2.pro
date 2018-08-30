@@ -110,6 +110,7 @@ DISTFILES += \
     config.ini \
     script/script.lua \
     Lua/tasklib.lua \
+    Lua/zlgcanlib.lua \
     lualab.ico \
     app.rc \
     edit.cmd \
