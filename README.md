@@ -36,7 +36,7 @@
 
 `gui.getmstime` 获取一个系统时间戳，精确到毫秒
 
-`gui.sleep` `gui.msleep` `gui.usleep` 硬延时，**注意：一般不使用，因为会挂机整个脚本的执行**
+`gui.sleep` `gui.msleep` `gui.usleep` 硬延时，**注意：一般不使用，因为会挂起整个脚本的执行**
 
 # task库使用
 
