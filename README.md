@@ -95,7 +95,7 @@ local pkg = {
 
 `canlib.write(dev, pkg)` 发CAN
 
-`canlib.pkg_data_to_str(dev)` 将一个CAN包转换成字符串
+`canlib.pkg_data_to_str(pkg)` 将一个CAN包转换成字符串
 
 `canlib.error(dev)` 查询一路CAN的错误码
 
