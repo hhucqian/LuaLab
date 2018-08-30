@@ -28,7 +28,7 @@
 
 `gui.addmsgtype("类别名字")` 设置消息类别名，返回类别ID
 
-`gui.push(type_id, "消息")` 显示一个消息，`type_id`为`gui.addmsgtype`返回的ID，不填默认为添加的第一个消息
+`gui.push(type_id, "消息")` 显示一个消息，`type_id`为`gui.addmsgtype`返回的ID，不填默认为添加的第一个消息类别
 
 `gui.setkv(key, value)` 设置键值对信息
 
