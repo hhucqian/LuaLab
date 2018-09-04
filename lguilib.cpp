@@ -139,6 +139,12 @@ static int gui_set_kv(lua_State *L) {
     return 0;
 }
 
+static int gui_to_clipboard(lua_State *L) {
+    const char *text = luaL_checkstring(L, 1);
+    gL->triggetToClipboard(text);
+    return 0;
+}
+
 
 static int gui_getS16(lua_State *L)
 {
@@ -302,6 +308,7 @@ static const luaL_Reg guilib[] = {
     {"settitle", gui_set_title},
     {"setfntitle", gui_set_fn_title},
     {"addmsgtype", gui_add_msg_type},
+    {"toclipboard", gui_to_clipboard},
     {"push", gui_push_msg},
     {"setkv", gui_set_kv},
     {"getS16", gui_getS16},

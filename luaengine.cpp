@@ -4,11 +4,15 @@
 #include "propertyeditor/luakvmodel.h"
 #include "lguilib.h"
 
+#include <QApplication>
+#include <QClipboard>
+
 LuaEngine::LuaEngine(QObject *parent) : QObject(parent)
 {
     this->m_L = NULL;
     this->m_lua_thread = NULL;
     this->m_msg_type_count = 0;
+    connect(this, SIGNAL(ToClipboradEvent(QString)), this, SLOT(onToClipborad(QString)));
 }
 
 LuaEngine* LuaEngine::Instance()
@@ -111,4 +115,14 @@ int LuaEngine::getNextMsgTypeCount()
 {
     ++this->m_msg_type_count;
     return this->m_msg_type_count;
+}
+
+void LuaEngine::triggetToClipboard(const char *text)
+{
+    emit ToClipboradEvent(QString::fromUtf8(text));
+}
+
+void LuaEngine::onToClipborad(QString text)
+{
+    QApplication::clipboard()->setText(text);
 }

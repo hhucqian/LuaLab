@@ -30,6 +30,7 @@ public:
     void triggerAddMsgType(const char* name);
     void triggerLuaScriptError(const char* msg);
     void triggerSetKV(const char *key, const char *value);
+    void triggetToClipboard(const char *text);
 
     void stopScript();
     void pauseScript();
@@ -44,6 +45,7 @@ signals:
     void AddMsgType(QString name);
     void LuaScriptError(QString msg);
     void SetKVEvent(QString key, QString value);
+    void ToClipboradEvent(QString text);
 
 private:
     QList<LuaEvent> m_events;
@@ -57,6 +59,7 @@ private:
 
 public slots:
     void onLuaThreadFinished();
+    void onToClipborad(QString text);
 };
 
 #endif // LUAENGINE_H
