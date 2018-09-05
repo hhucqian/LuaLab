@@ -38,6 +38,10 @@ QVariant LuaKVModel::data(const QModelIndex &index, int role) const
         if(index.column() == 1) {
             return this->m_values.value(this->m_keys.at(index.row()));
         }
+    } else if (role == Qt::BackgroundRole) {
+        if(this->m_colors.contains(this->m_keys.at(index.row()))) {
+            return this->m_colors.value(this->m_keys.at(index.row()));
+        }
     }
     return QVariant();
 }
@@ -45,26 +49,9 @@ QVariant LuaKVModel::data(const QModelIndex &index, int role) const
 QVariant LuaKVModel::headerData(int section, Qt::Orientation orientation, int role) const
 {
     if(role == Qt::DisplayRole && orientation == Qt::Horizontal) {
-        if(section == 0) {
-            return this->m_headers.at(0);
-        }
-        if(section == 1) {
-            return this->m_headers.at(1);
-        }
+        return this->m_headers.at(section);
     }
     return QVariant();
-}
-
-bool LuaKVModel::setData(const QModelIndex &index, const QVariant &value, int role)
-{
-    QWriteLocker(&this->m_lock);
-    if(role == Qt::EditRole) {
-        QWriteLocker(&this->m_lock);
-        this->m_values.insert(this->m_keys.at(index.row()), value.toString());
-        emit dataChanged(index, index);
-        return true;
-    }
-    return false;
 }
 
 Qt::ItemFlags LuaKVModel::flags(const QModelIndex &/*index*/) const
@@ -72,13 +59,26 @@ Qt::ItemFlags LuaKVModel::flags(const QModelIndex &/*index*/) const
     return Qt::ItemIsSelectable | Qt::ItemIsEnabled;
 }
 
-void LuaKVModel::setKV(const QString &key, const QString &value)
+void LuaKVModel::setKV(const QString &key, const QString &value, const QString &color)
 {
     QWriteLocker(&this->m_lock);
     if(!this->m_keys.contains(key)) {
         this->m_keys.append(key);
     }
     this->m_values.insert(key, value);
+    if(color.trimmed().length() == 0) {
+        this->m_colors.remove(key);
+    } else {
+        QStringList rgb = color.split(',');
+        while(rgb.length() < 3) {
+            rgb.append("0");
+        }
+        if(rgb.length() == 3) {
+            this->m_colors.insert(key, QBrush(QColor::fromRgb(rgb[0].toInt(), rgb[1].toInt(), rgb[2].toInt())));
+        } else {
+            this->m_colors.insert(key, QBrush(QColor::fromRgb(rgb[0].toInt(), rgb[1].toInt(), rgb[2].toInt(), rgb[3].toInt())));
+        }
+    }
     this->m_need_reset = true;
 }
 

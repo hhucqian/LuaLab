@@ -29,7 +29,7 @@ public:
     void triggerPushMsg(int type, const char* msg);
     void triggerAddMsgType(const char* name);
     void triggerLuaScriptError(const char* msg);
-    void triggerSetKV(const char *key, const char *value);
+    void triggerSetKV(const char *key, const char *value, const char *color);
     void triggetToClipboard(const char *text);
 
     void stopScript();
@@ -44,7 +44,7 @@ signals:
     void PushMsg(int type, QString msg);
     void AddMsgType(QString name);
     void LuaScriptError(QString msg);
-    void SetKVEvent(QString key, QString value);
+    void SetKVEvent(QString key, QString value, QString color);
     void ToClipboradEvent(QString text);
 
 private:

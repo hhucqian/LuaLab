@@ -4,6 +4,8 @@
 #include <QAbstractTableModel>
 #include <QList>
 #include <QHash>
+#include <QColor>
+#include <QBrush>
 #include <QVariant>
 #include <QReadWriteLock>
 #include <QStringList>
@@ -19,9 +21,8 @@ public:
     QVariant data(const QModelIndex &index, int role) const;
     QVariant headerData(int section, Qt::Orientation orientation, int role) const;
     Qt::ItemFlags flags(const QModelIndex &index) const;
-    bool setData(const QModelIndex &index, const QVariant &value, int role);
     void clearKV();
-    void setKV(const QString &key, const QString &value);
+    void setKV(const QString &key, const QString &value, const QString &color);
 
 signals:
 
@@ -33,6 +34,7 @@ public slots:
 private:
     QList<QString> m_keys;
     QHash<QString, QString> m_values;
+    QHash<QString, QBrush> m_colors;
     QStringList m_headers;
 
     QReadWriteLock m_lock;

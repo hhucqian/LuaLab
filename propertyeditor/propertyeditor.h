@@ -13,7 +13,7 @@ public:
     explicit PropertyEditor(QWidget *parent = 0);
 
 public slots:
-    void onSetKV(QString key, QString value);
+    void onSetKV(QString key, QString value, QString color);
     void onLuaStateChange(QString, bool isRunning);
 
 protected:

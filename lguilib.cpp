@@ -133,9 +133,16 @@ static int gui_add_msg_type(lua_State *L) {
 }
 
 static int gui_set_kv(lua_State *L) {
+    int top = lua_gettop(L);
     const char *key = luaL_checkstring(L, 1);
     const char *value = luaL_checkstring(L, 2);
-    gL->triggerSetKV(key, value);
+    const char *color = NULL;
+    if(top == 2) {
+       gL->triggerSetKV(key, value, "");
+    } else if (top == 3) {
+       color = luaL_checkstring(L, 3);
+       gL->triggerSetKV(key, value, color);
+    }
     return 0;
 }
 

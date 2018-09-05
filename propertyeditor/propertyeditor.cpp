@@ -9,7 +9,7 @@
 PropertyEditor::PropertyEditor(QWidget *parent) : QWidget(parent)
 {
     this->setupUI();
-    connect(gL, SIGNAL(SetKVEvent(QString,QString)), this, SLOT(onSetKV(QString,QString)));
+    connect(gL, SIGNAL(SetKVEvent(QString,QString,QString)), this, SLOT(onSetKV(QString,QString,QString)));
     connect(gL, SIGNAL(LuaStateChange(QString, bool)), this, SLOT(onLuaStateChange(QString, bool)));
 }
 
@@ -31,9 +31,9 @@ void PropertyEditor::setupUI()
     this->setLayout(main_layout);
 }
 
-void PropertyEditor::onSetKV(QString key, QString value)
+void PropertyEditor::onSetKV(QString key, QString value, QString color)
 {
-    this->m_model->setKV(key, value);
+    this->m_model->setKV(key, value, color);
 }
 
 void PropertyEditor::onLuaStateChange(QString, bool isRunning)

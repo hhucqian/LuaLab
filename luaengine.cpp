@@ -106,9 +106,9 @@ void LuaEngine::triggerLuaScriptError(const char *msg)
     emit LuaScriptError(QString::fromUtf8(msg));
 }
 
-void LuaEngine::triggerSetKV(const char *key, const char *value)
+void LuaEngine::triggerSetKV(const char *key, const char *value, const char *color)
 {
-    emit SetKVEvent(QString::fromUtf8(key), QString::fromUtf8(value));
+    emit SetKVEvent(QString::fromUtf8(key), QString::fromUtf8(value), QString::fromUtf8(color));
 }
 
 int LuaEngine::getNextMsgTypeCount()
