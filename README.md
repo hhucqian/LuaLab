@@ -30,13 +30,15 @@
 
 `gui.push(type_id, "消息")` 显示一个消息，`type_id`为`gui.addmsgtype`返回的ID，不填默认为添加的第一个消息类别
 
-`gui.setkv(key, value)` 设置键值对信息
+`gui.setkv(key, value, color)` 设置键值对信息 `key` 键名， `vaule` 值，`color` 可选信息，表示背景色，格式为 `r,g,b` 或者 `r,g,b,a`，例如 `255,0,0` 表示红色，`255,0,0,50` 表示浅红色。
 
 # 系统相关操作
 
 `gui.getmstime` 获取一个系统时间戳，精确到毫秒
 
 `gui.sleep` `gui.msleep` `gui.usleep` 硬延时，**注意：一般不使用，因为会挂起整个脚本的执行**
+
+`gui.toclipboard(txt)` 将字符串`txt`复制到系统剪贴板
 
 # task库使用
 
