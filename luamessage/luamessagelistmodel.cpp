@@ -13,10 +13,16 @@ void LuaMessageListModel::addMessage(const LuaMessage &msg)
 {
     QWriteLocker locker(&this->m_rw_lock);
     this->m_all_msg.insert(0, msg);
+    if (this->m_all_msg.size() > 100 * this->m_max_row_count){
+        this->m_all_msg.removeLast();
+    }
     if(this->m_show_types.size() == 0 || this->m_show_types.contains(msg.Type())) {
         this->m_show_msg.insert(0, &this->m_all_msg.first());
         QWriteLocker reset_lock(&this->m_reset_lock);
         this->m_need_reset = true;
+        if(this->m_show_msg.size() > this->m_max_row_count){
+            this->m_show_msg.removeLast();
+        }
     }
 }
 
@@ -33,7 +39,7 @@ void LuaMessageListModel::timerEvent(QTimerEvent */*event*/)
 int LuaMessageListModel::rowCount(const QModelIndex &/*parent*/) const
 {
     QReadLocker locker(const_cast<QReadWriteLock*>(&this->m_rw_lock));
-    return this->m_show_msg.size() > this->m_max_row_count ? this->m_max_row_count : this->m_show_msg.size();
+    return this->m_show_msg.size();
 }
 
 QVariant LuaMessageListModel::data(const QModelIndex &index, int role) const
