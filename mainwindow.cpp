@@ -193,6 +193,9 @@ void MainWindow::createScriptToolBar()
     action = new QAction(QString::fromUtf8("编辑"), this);
     this->m_script_tool_actions.append(action);
     this->m_edit_action = action;
+    action = new QAction(QString::fromUtf8("消音"), this);
+    this->m_script_tool_actions.append(action);
+    this->m_stop_media_action = action;
     QToolBar *toolBar = new QToolBar();
     toolBar->addWidget(this->m_cbx_scripts);
     toolBar->addActions(this->m_script_tool_actions);
@@ -203,6 +206,7 @@ void MainWindow::createScriptToolBar()
     connect(this->m_run_action, SIGNAL(triggered(bool)), this, SLOT(onScriptRunClick()));
     connect(this->m_paush_action, SIGNAL(triggered(bool)), this, SLOT(onScriptPauseClick()));
     connect(this->m_edit_action, SIGNAL(triggered(bool)), this, SLOT(onScriptEditClick()));
+    connect(this->m_stop_media_action, SIGNAL(triggered(bool)), this, SLOT(onStopMediaClick()));
 }
 
 void MainWindow::onScriptRunClick()
@@ -320,5 +324,10 @@ void MainWindow::onFontMidClick()
 void MainWindow::onFontNormalClick()
 {
     qApp->setStyleSheet("");
+}
+
+void MainWindow::onStopMediaClick()
+{
+    gL->triggerStopMedia();
 }
 

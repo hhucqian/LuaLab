@@ -148,7 +148,7 @@ static int gui_set_kv(lua_State *L) {
 
 static int gui_to_clipboard(lua_State *L) {
     const char *text = luaL_checkstring(L, 1);
-    gL->triggetToClipboard(text);
+    gL->triggerToClipboard(text);
     return 0;
 }
 
@@ -303,7 +303,18 @@ static int gui_transF32(lua_State *L)
     return 1;
 }
 
+static int gui_playmedia(lua_State *L)
+{
+    const char *file = luaL_checkstring(L, 1);
+    gL->triggerPlayMedia(file);
+    return 0;
+}
 
+static int gui_stopmedia(lua_State */*L*/)
+{
+    gL->triggerStopMedia();
+    return 0;
+}
 
 static const luaL_Reg guilib[] = {
     {"getmstime", gui_getmstime},
@@ -316,6 +327,8 @@ static const luaL_Reg guilib[] = {
     {"setfntitle", gui_set_fn_title},
     {"addmsgtype", gui_add_msg_type},
     {"toclipboard", gui_to_clipboard},
+    {"playmedia", gui_playmedia},
+    {"stopmedia", gui_stopmedia},
     {"push", gui_push_msg},
     {"setkv", gui_set_kv},
     {"getS16", gui_getS16},

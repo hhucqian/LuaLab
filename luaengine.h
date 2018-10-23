@@ -4,6 +4,8 @@
 #include <QObject>
 #include <QList>
 #include <QThread>
+#include <phonon/AudioOutput>
+#include <phonon/MediaObject>
 #include "Lua/lua.hpp"
 #include "luaevent.h"
 #include "luathread.h"
@@ -30,7 +32,9 @@ public:
     void triggerAddMsgType(const char* name);
     void triggerLuaScriptError(const char* msg);
     void triggerSetKV(const char *key, const char *value, const char *color);
-    void triggetToClipboard(const char *text);
+    void triggerToClipboard(const char *text);
+    void triggerPlayMedia(const char *file);
+    void triggerStopMedia();
 
     void stopScript();
     void pauseScript();
@@ -46,12 +50,16 @@ signals:
     void LuaScriptError(QString msg);
     void SetKVEvent(QString key, QString value, QString color);
     void ToClipboradEvent(QString text);
+    void PlayMediaEvent(QString file);
+    void StopMediaEvent();
 
 private:
     QList<LuaEvent> m_events;
     lua_State* newLuaThread();
     void closeLuaThread(){ lua_close(this->m_L); this->m_L = NULL;}
     int m_msg_type_count;
+    Phonon::MediaObject *mediaObject;
+    Phonon::AudioOutput *audioOutput;
 
     lua_State* m_L;
     LuaThread *m_lua_thread;
@@ -60,6 +68,9 @@ private:
 public slots:
     void onLuaThreadFinished();
     void onToClipborad(QString text);
+    void onPlayMedia(QString file);
+    void onStopMedia();
+    void onAboutToFinish();
 };
 
 #endif // LUAENGINE_H

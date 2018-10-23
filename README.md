@@ -32,6 +32,13 @@
 
 `gui.setkv(key, value, color)` 设置键值对信息 `key` 键名， `vaule` 值，`color` 可选信息，表示背景色，格式为 `"r,g,b"` 或者 `"r,g,b,a"`，例如 `"255,0,0"` 表示红色，`"255,0,0,50"` 表示浅红色。
 
+# 多媒体
+
+`gui.playmedia("文件路径")` 播放一段音乐
+
+`gui.stopmedia()` 停止播放音乐
+
+
 # 系统相关操作
 
 `gui.getmstime` 获取一个系统时间戳，精确到毫秒

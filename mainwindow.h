@@ -44,7 +44,7 @@ private:
     bool m_is_running;
     void createScriptToolBar();
     QList<QAction*> m_script_tool_actions;
-    QAction* m_run_action, *m_paush_action, *m_edit_action;
+    QAction* m_run_action, *m_paush_action, *m_edit_action, *m_stop_media_action;
 
     void createMenu();
     void createToolsMenu();
@@ -70,6 +70,7 @@ public slots:
     void onFontBigClick();
     void onFontMidClick();
     void onFontNormalClick();
+    void onStopMediaClick();
 };
 
 #endif // MAINWINDOW_H
