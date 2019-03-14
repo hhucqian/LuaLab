@@ -6,7 +6,7 @@
 
 LuaMessageListModel::LuaMessageListModel(QObject *parent) : QAbstractListModel(parent),m_max_row_count(500), m_need_reset(false)
 {
-    this->startTimer(50);
+    this->startTimer(100);
 }
 
 void LuaMessageListModel::addMessage(const LuaMessage &msg)
@@ -17,7 +17,7 @@ void LuaMessageListModel::addMessage(const LuaMessage &msg)
         this->m_all_msg.removeLast();
     }
     if(this->m_show_types.size() == 0 || this->m_show_types.contains(msg.Type())) {
-        this->m_show_msg.insert(0, &this->m_all_msg.first());
+        this->m_show_msg.insert(0, this->m_all_msg.first());
         QWriteLocker reset_lock(&this->m_reset_lock);
         this->m_need_reset = true;
         if(this->m_show_msg.size() > this->m_max_row_count){
@@ -46,7 +46,7 @@ QVariant LuaMessageListModel::data(const QModelIndex &index, int role) const
 {
     QReadLocker locker(const_cast<QReadWriteLock*>(&this->m_rw_lock));
     if(role == Qt::DisplayRole || role == Qt::EditRole) {
-        return this->m_show_msg.at(index.row())->Msg();
+        return this->m_show_msg.at(index.row()).Msg();
     }
     return QVariant();
 }
@@ -66,7 +66,7 @@ void LuaMessageListModel::filterShowMsg()
     {
         if(this->m_show_types.size() == 0 || this->m_show_types.contains((*it).Type()))
         {
-            this->m_show_msg.append(&(*it));
+            this->m_show_msg.append(*it);
             if(this->m_show_msg.count() >= this->m_max_row_count)
             {
                 break;
@@ -99,7 +99,7 @@ void LuaMessageListModel::saveToFile()
     file.open(QFile::WriteOnly | QFile::Truncate | QFile::Text);
     QReadLocker locker(&this->m_rw_lock);
     for(int i = 0; i < this->m_show_msg.size(); ++i) {
-        file.write((this->m_show_msg.at(i)->Msg() + "\n").toUtf8());
+        file.write((this->m_show_msg.at(i).Msg() + "\n").toUtf8());
     }
     file.close();
 }

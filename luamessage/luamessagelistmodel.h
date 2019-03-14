@@ -32,7 +32,7 @@ signals:
 public slots:
 
 private:
-    QList<LuaMessage*> m_show_msg;
+    QList<LuaMessage> m_show_msg;
     QList<LuaMessage> m_all_msg;
     QList<int> m_show_types;
     int m_max_row_count;
