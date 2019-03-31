@@ -148,6 +148,27 @@ function canlib.tohex(value, n)
     return string.format("%0" .. n .."X", value)
 end
 
+function canlib.tobin(value)
+    value = value or 0
+    local res = ""
+    while value ~= 0 do
+        res = res .. tostring(value & 0x1)
+        value = value >> 1
+    end
+    return res
+end
+
+function canlib.tobin2(value, n)
+    value = value or 0
+    local res = ""
+    while n ~= 0 do
+        res = res .. tostring(value & 0x1)
+        value = value >> 1
+        n = n - 1
+    end
+    return res
+end
+
 function canlib.error(dev)
     local devtype = dev.devType or canlib.devtype.VCI_USBCAN_2E_U
     local devindex = dev.devIndex or 0
