@@ -2,6 +2,7 @@
 #define LUAMESSAGE_H
 
 #include <QObject>
+#include <QDateTime>
 
 class LuaMessage : public QObject
 {
@@ -14,10 +15,12 @@ public:
     LuaMessage& operator=(const LuaMessage& m);
     int Type() const { return this->m_type; }
     const QString& Msg() const { return this->m_msg; }
+    bool isExpire(int sec) const;
 
 private:
     int m_type;
     QString m_msg;
+    QDateTime m_datetime;
 
 signals:
 

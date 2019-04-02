@@ -4,8 +4,7 @@
 #include <QObject>
 #include <QList>
 #include <QThread>
-#include <phonon/AudioOutput>
-#include <phonon/MediaObject>
+#include <QMediaPlayer>
 #include "Lua/lua.hpp"
 #include "luaevent.h"
 #include "luathread.h"
@@ -58,8 +57,7 @@ private:
     lua_State* newLuaThread();
     void closeLuaThread(){ lua_close(this->m_L); this->m_L = NULL;}
     int m_msg_type_count;
-    Phonon::MediaObject *mediaObject;
-    Phonon::AudioOutput *audioOutput;
+    QMediaPlayer m_player;
 
     lua_State* m_L;
     LuaThread *m_lua_thread;
@@ -70,7 +68,6 @@ public slots:
     void onToClipborad(QString text);
     void onPlayMedia(QString file);
     void onStopMedia();
-    void onAboutToFinish();
 };
 
 #endif // LUAENGINE_H

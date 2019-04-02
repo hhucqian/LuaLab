@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui phonon
+QT       += core gui multimedia
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -117,3 +117,5 @@ DISTFILES += \
     tools.txt
 
 LIBS += -L"$$_PRO_FILE_PWD_/zlgcan" -lControlCAN
+
+win32-msvc:QMAKE_CXXFLAGS += /utf-8

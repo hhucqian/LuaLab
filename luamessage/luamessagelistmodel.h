@@ -23,6 +23,8 @@ public:
     void clearDataAndTypes();
     Qt::ItemFlags flags(const QModelIndex &index) const;
     void saveToFile();
+    int showMsgCount() const { return this->m_show_msg.size(); };
+    int allMsgCount() const { return this->m_all_msg.size(); };
 
 protected:
     void timerEvent(QTimerEvent * event );
@@ -34,14 +36,14 @@ public slots:
 private:
     QList<LuaMessage> m_show_msg;
     QList<LuaMessage> m_all_msg;
+    QList<LuaMessage> m_temp_msg;
     QList<int> m_show_types;
     int m_max_row_count;
 
     void filterShowMsg();
 
     QReadWriteLock m_rw_lock;
-    QReadWriteLock m_reset_lock;
-    bool m_need_reset;
+    QReadWriteLock m_temp_lock;
 
 };
 
