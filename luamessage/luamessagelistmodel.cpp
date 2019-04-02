@@ -4,34 +4,38 @@
 #include <QFile>
 #include <QFileDialog>
 
-LuaMessageListModel::LuaMessageListModel(QObject *parent) : QAbstractListModel(parent),m_max_row_count(500), m_need_reset(false)
+LuaMessageListModel::LuaMessageListModel(QObject *parent) : QAbstractListModel(parent),m_max_row_count(1000)
 {
     this->startTimer(200);
 }
 
 void LuaMessageListModel::addMessage(const LuaMessage &msg)
 {
-    QWriteLocker locker(&this->m_rw_lock);
-    this->m_all_msg.insert(0, msg);
-    if (this->m_all_msg.size() > 100 * this->m_max_row_count){
-        this->m_all_msg.removeLast();
-    }
-    if(this->m_show_types.size() == 0 || this->m_show_types.contains(msg.Type())) {
-        this->m_show_msg.insert(0, this->m_all_msg.first());
-        QWriteLocker reset_lock(&this->m_reset_lock);
-        this->m_need_reset = true;
-        if(this->m_show_msg.size() > this->m_max_row_count){
-            this->m_show_msg.removeLast();
-        }
-    }
+    QWriteLocker temp_locker(&this->m_temp_lock);
+    this->m_temp_msg.append(msg);
 }
 
-void LuaMessageListModel::timerEvent(QTimerEvent */*event*/)
+void LuaMessageListModel::timerEvent(QTimerEvent *)
 {
-    QWriteLocker reset_lock(&this->m_reset_lock);
-    if(this->m_need_reset) {
-        this->m_need_reset = false;
+    QWriteLocker temp_locker(&this->m_temp_lock);
+    QWriteLocker locker(const_cast<QReadWriteLock*>(&this->m_rw_lock));
+
+    if(!this->m_temp_msg.empty()){
         this->beginResetModel();
+        foreach(const auto& msg , this->m_temp_msg) {
+            this->m_all_msg.insert(0, msg);
+            if(this->m_show_types.empty() || this->m_show_types.contains(msg.Type())) {
+                this->m_show_msg.insert(0, msg);
+            }
+        }
+        this->m_temp_msg.clear();
+        while(!this->m_all_msg.empty() && this->m_all_msg.size() > 10 * this->m_max_row_count && this->m_all_msg.last().isExpire(5 * 60)){
+            this->m_all_msg.removeLast();
+        }
+        while(!this->m_show_msg.empty() && this->m_show_msg.size() > this->m_max_row_count){
+            this->m_show_msg.removeLast();
+        }
+
         this->endResetModel();
     }
 }
@@ -80,6 +84,7 @@ void LuaMessageListModel::filterShowMsg()
 
 void LuaMessageListModel::clearDataAndTypes()
 {
+    QWriteLocker locker(&this->m_rw_lock);
     this->beginResetModel();
     this->m_show_msg.clear();
     this->m_all_msg.clear();
