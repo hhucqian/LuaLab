@@ -29,6 +29,7 @@ protected:
     void closeEvent(QCloseEvent *);
 private:
     QSettings m_settings;
+    QString m_appname;
 
     void setupUI();
     void saveConfigFile();

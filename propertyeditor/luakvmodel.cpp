@@ -13,7 +13,8 @@ void LuaKVModel::timerEvent(QTimerEvent */*event*/)
     QWriteLocker(&this->m_lock);
     if(this->m_need_reset) {
         this->m_need_reset = false;
-        this->reset();
+        this->beginResetModel();
+        this->endResetModel();
     }
 }
 
@@ -84,7 +85,8 @@ void LuaKVModel::setKV(const QString &key, const QString &value, const QString &
 
 void LuaKVModel::clearKV()
 {
+    this->beginResetModel();
     this->m_keys.clear();
     this->m_values.clear();
-    this->reset();
+    this->endResetModel();
 }

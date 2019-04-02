@@ -6,7 +6,7 @@
 
 LuaMessageListModel::LuaMessageListModel(QObject *parent) : QAbstractListModel(parent),m_max_row_count(500), m_need_reset(false)
 {
-    this->startTimer(100);
+    this->startTimer(200);
 }
 
 void LuaMessageListModel::addMessage(const LuaMessage &msg)
@@ -31,7 +31,8 @@ void LuaMessageListModel::timerEvent(QTimerEvent */*event*/)
     QWriteLocker reset_lock(&this->m_reset_lock);
     if(this->m_need_reset) {
         this->m_need_reset = false;
-        this->reset();
+        this->beginResetModel();
+        this->endResetModel();
     }
 }
 
@@ -61,6 +62,7 @@ void LuaMessageListModel::setShowTypes(const QList<int> &list)
 void LuaMessageListModel::filterShowMsg()
 {
     QWriteLocker locker(&this->m_rw_lock);
+    this->beginResetModel();
     this->m_show_msg.clear();
     for(QList<LuaMessage>::iterator it = this->m_all_msg.begin(); it != this->m_all_msg.end(); ++it)
     {
@@ -73,15 +75,16 @@ void LuaMessageListModel::filterShowMsg()
             }
         }
     }
-    this->reset();
+    this->endResetModel();
 }
 
 void LuaMessageListModel::clearDataAndTypes()
 {
+    this->beginResetModel();
     this->m_show_msg.clear();
     this->m_all_msg.clear();
     this->m_show_types.clear();
-    this->reset();
+    this->endResetModel();
 }
 
 Qt::ItemFlags LuaMessageListModel::flags(const QModelIndex &index) const

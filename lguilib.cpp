@@ -3,6 +3,8 @@
 
 #include "sleeperthread.h"
 
+#include <sys/timeb.h>
+
 static int gui_get_event(lua_State* L)
 {
     if(!gL->hasEvent()) {

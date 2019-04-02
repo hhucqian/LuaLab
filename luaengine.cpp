@@ -12,13 +12,9 @@ LuaEngine::LuaEngine(QObject *parent) : QObject(parent)
     this->m_L = NULL;
     this->m_lua_thread = NULL;
     this->m_msg_type_count = 0;
-    this->audioOutput = new Phonon::AudioOutput(Phonon::MusicCategory, this);
-    this->mediaObject = new Phonon::MediaObject(this);
     connect(this, SIGNAL(ToClipboradEvent(QString)), this, SLOT(onToClipborad(QString)));
     connect(this, SIGNAL(PlayMediaEvent(QString)), this, SLOT(onPlayMedia(QString)));
     connect(this, SIGNAL(StopMediaEvent()), this, SLOT(onStopMedia()));
-    connect(this->mediaObject, SIGNAL(aboutToFinish()), this, SLOT(onAboutToFinish()));
-    Phonon::createPath(this->mediaObject, this->audioOutput);
 }
 
 LuaEngine* LuaEngine::Instance()
@@ -145,18 +141,14 @@ void LuaEngine::triggerStopMedia()
 
 void LuaEngine::onPlayMedia(QString file)
 {
-    if(this->mediaObject->remainingTime() <= 0){
-        this->mediaObject->enqueue(Phonon::MediaSource(file));
-        this->mediaObject->play();
+    if(this->m_player.state() == QMediaPlayer::StoppedState){
+        this->m_player.setMedia(QUrl::fromLocalFile(file));
+        this->m_player.setVolume(50);
+        this->m_player.play();
     }
 }
 
 void LuaEngine::onStopMedia()
 {
-    this->mediaObject->clear();
-}
-
-void LuaEngine::onAboutToFinish()
-{
-    this->mediaObject->enqueue(this->mediaObject->currentSource());
+    this->m_player.stop();
 }

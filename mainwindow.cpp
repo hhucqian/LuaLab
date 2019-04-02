@@ -23,8 +23,9 @@ MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent),
       m_settings("config.ini", QSettings::IniFormat, this), m_fn_count(8), m_is_pause(false), m_is_running(false)
 {
+    this->m_appname = "LuaLab V2.1";
     this->setupUI();
-    this->setWindowTitle(QString::fromUtf8("LuaLab V2.0"));
+    this->setWindowTitle(this->m_appname);
     this->m_fs_watcher.addPath("script/");
     qRegisterMetaType<LuaEvent>("LuaEvent");
     connect(gL, SIGNAL(GetLuaEvent(LuaEvent)), this, SLOT(onLuaEvent(LuaEvent)));
@@ -97,7 +98,7 @@ void MainWindow::onLuaEvent(LuaEvent event)
 {
     switch (event.Type) {
     case LuaEvent::EVENT_SET_TITLE:
-        this->setWindowTitle(QString("LuaLab V2.0 - %1").arg(event.ExtraString));
+        this->setWindowTitle(QString("%1 - %2").arg(this->m_appname).arg(event.ExtraString));
         break;
     case LuaEvent::EVENT_SET_FN_TEXT:
         this->m_fn_actions.at(event.ExtraInt -1)->setText(event.ExtraString);
