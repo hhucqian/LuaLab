@@ -98,7 +98,7 @@ void MainWindow::onLuaEvent(LuaEvent event)
 {
     switch (event.Type) {
     case LuaEvent::EVENT_SET_TITLE:
-        this->setWindowTitle(QString("%1 - %2").arg(this->m_appname).arg(event.ExtraString));
+        this->setWindowTitle(QString("%1 - %2").arg(this->m_appname, event.ExtraString));
         break;
     case LuaEvent::EVENT_SET_FN_TEXT:
         this->m_fn_actions.at(event.ExtraInt -1)->setText(event.ExtraString);
