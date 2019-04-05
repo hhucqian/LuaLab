@@ -1,14 +1,14 @@
 #include "luavalueedit.h"
-#include <QHBoxLayout>
-#include <QVBoxLayout>
-#include <QPushButton>
-#include <QHash>
 #include "luaengine.h"
+#include <QHBoxLayout>
+#include <QHash>
+#include <QPushButton>
+#include <QVBoxLayout>
 
 LuaValueEdit::LuaValueEdit(QWidget *parent) : QWidget(parent)
 {
     this->setupUI();
-    connect(gL, SIGNAL(LuaStateChange(QString, bool)), this, SLOT(onLuaStateChange(QString,bool)));
+    connect(gL, SIGNAL(LuaStateChange(QString, bool)), this, SLOT(onLuaStateChange(QString, bool)));
 }
 
 void LuaValueEdit::setupUI()
@@ -41,13 +41,17 @@ void LuaValueEdit::onTextChangedEvent()
     QHash<QString, QString> res;
     QString content = this->m_editor->toPlainText();
     QStringList lines = content.split('\n', QString::SkipEmptyParts);
-    for(int i = 0; i < lines.size(); ++i) {
+    for (int i = 0; i < lines.size(); ++i)
+    {
         QString line = lines.at(i);
-        if(line.contains('=')) {
+        if (line.contains('='))
+        {
             QString key = line.left(line.indexOf('='));
             QString value = line.mid(line.indexOf('=') + 1);
             res.insert(key, value);
-        } else {
+        }
+        else
+        {
             res.insert(line, line);
         }
     }
@@ -57,7 +61,7 @@ void LuaValueEdit::onTextChangedEvent()
 
 void LuaValueEdit::onLuaStateChange(QString, bool isRunning)
 {
-    if(isRunning)
+    if (isRunning)
     {
         this->onTextChangedEvent();
     }

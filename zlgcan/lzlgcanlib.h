@@ -4,6 +4,6 @@
 #include "Lua/lua.hpp"
 
 #define LUA_ZLGCANNAME "zlgcan"
-LUAMOD_API int (luaopen_zlgcan) (lua_State *L);
+LUAMOD_API int(luaopen_zlgcan)(lua_State *L);
 
 #endif // LZLGCANLIB_H

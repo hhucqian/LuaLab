@@ -5,51 +5,49 @@
 
 #define REC_BUFF_SIZE (50)
 
-#define CAN_OK	1
-#define CAN_ERR	0
+#define CAN_OK 1
+#define CAN_ERR 0
 
 VCI_CAN_OBJ recvBuf[REC_BUFF_SIZE];
 VCI_CAN_OBJ sendBuf;
 
 int BaudRateTimingTable[][3] = {
-    {   5, 0xBF, 0xFF},
-    {  10, 0x31, 0x1C},
-    {  20, 0x18, 0x1C},
-    {  40, 0x87, 0xFF},
-    {  50, 0x09, 0x1C},
-    {  80, 0x83, 0xFF},
-    { 100, 0x04, 0x1C},
-    { 125, 0x03, 0x1C},
-    { 200, 0x81, 0xFA},
-    { 250, 0x01, 0x1C},
-    { 400, 0x80, 0xFA},
-    { 500, 0x00, 0x1C},
-    { 666, 0x80, 0xB6},
-    { 800, 0x00, 0x16},
-    {1000, 0x00, 0x14}
-};
+    {5, 0xBF, 0xFF},
+    {10, 0x31, 0x1C},
+    {20, 0x18, 0x1C},
+    {40, 0x87, 0xFF},
+    {50, 0x09, 0x1C},
+    {80, 0x83, 0xFF},
+    {100, 0x04, 0x1C},
+    {125, 0x03, 0x1C},
+    {200, 0x81, 0xFA},
+    {250, 0x01, 0x1C},
+    {400, 0x80, 0xFA},
+    {500, 0x00, 0x1C},
+    {666, 0x80, 0xB6},
+    {800, 0x00, 0x16},
+    {1000, 0x00, 0x14}};
 
 int BoudForSetReferenceTable[][2] = {
     {1000, 0x060003},
-    { 800, 0x060004},
-    { 500, 0x060007},
-    { 250, 0x1C0008},
-    { 125, 0x1C0011},
-    { 100, 0x160023},
-    {  50, 0x1C002C},
-    {  20, 0x1600B3},
-    {  10, 0x1C00E0},
-    {   5, 0x1C01C1}
-};
+    {800, 0x060004},
+    {500, 0x060007},
+    {250, 0x1C0008},
+    {125, 0x1C0011},
+    {100, 0x160023},
+    {50, 0x1C002C},
+    {20, 0x1600B3},
+    {10, 0x1C00E0},
+    {5, 0x1C01C1}};
 
 int baudRateTiming(int baud, int j)
 {
     int i, n, res;
     res = 0;
     n = sizeof(BaudRateTimingTable) / (sizeof(int) * 3);
-    for(i = 0; i < n; i++)
+    for (i = 0; i < n; i++)
     {
-        if(BaudRateTimingTable[i][0] == baud)
+        if (BaudRateTimingTable[i][0] == baud)
         {
             res = BaudRateTimingTable[i][j];
             break;
@@ -72,10 +70,7 @@ int needSetBaudBySetReference(int type)
 {
     int res = FALSE;
 
-    if(type == VCI_PCI5010U
-        || type == VCI_PCI5020U
-        || type == VCI_USBCAN_E_U
-        || type == VCI_USBCAN_2E_U)
+    if (type == VCI_PCI5010U || type == VCI_PCI5020U || type == VCI_USBCAN_E_U || type == VCI_USBCAN_2E_U)
     {
         res = TRUE;
     }
@@ -87,9 +82,9 @@ int getBoudForSetReference(int baud)
     int i, n, res;
     res = 0;
     n = sizeof(BoudForSetReferenceTable) / (sizeof(int) * 3);
-    for(i = 0; i < n; i++)
+    for (i = 0; i < n; i++)
     {
-        if(BoudForSetReferenceTable[i][0] == baud)
+        if (BoudForSetReferenceTable[i][0] == baud)
         {
             res = BoudForSetReferenceTable[i][1];
             break;
@@ -100,42 +95,42 @@ int getBoudForSetReference(int baud)
 
 static int can_open_device(lua_State *L)
 {
-     int dev_type, dev_index;
-     VCI_ERR_INFO errinfo;
+    int dev_type, dev_index;
+    VCI_ERR_INFO errinfo;
 
-     dev_type = luaL_checkinteger(L, 1);
-     dev_index = luaL_checkinteger(L, 2);
+    dev_type = luaL_checkinteger(L, 1);
+    dev_index = luaL_checkinteger(L, 2);
 
-     if(STATUS_ERR ==  VCI_OpenDevice(dev_type, dev_index, 0))
-     {
-         lua_pushinteger(L, CAN_ERR);
-         VCI_ReadErrInfo(dev_type, dev_index, -1, &errinfo);
-         lua_pushinteger(L, errinfo.ErrCode);
-         return 2;
-     }
+    if (STATUS_ERR == VCI_OpenDevice(dev_type, dev_index, 0))
+    {
+        lua_pushinteger(L, CAN_ERR);
+        VCI_ReadErrInfo(dev_type, dev_index, -1, &errinfo);
+        lua_pushinteger(L, errinfo.ErrCode);
+        return 2;
+    }
 
-     lua_pushinteger(L, CAN_OK);
-     return 1;
+    lua_pushinteger(L, CAN_OK);
+    return 1;
 }
 
 static int can_close_device(lua_State *L)
 {
-     int dev_type, dev_index;
-     VCI_ERR_INFO errinfo;
+    int dev_type, dev_index;
+    VCI_ERR_INFO errinfo;
 
-     dev_type = luaL_checkinteger(L, 1);
-     dev_index = luaL_checkinteger(L, 2);
+    dev_type = luaL_checkinteger(L, 1);
+    dev_index = luaL_checkinteger(L, 2);
 
-     if(STATUS_ERR ==  VCI_CloseDevice(dev_type, dev_index))
-     {
-         lua_pushinteger(L, CAN_ERR);
-         VCI_ReadErrInfo(dev_type, dev_index, -1, &errinfo);
-         lua_pushinteger(L, errinfo.ErrCode);
-         return 2;
-     }
+    if (STATUS_ERR == VCI_CloseDevice(dev_type, dev_index))
+    {
+        lua_pushinteger(L, CAN_ERR);
+        VCI_ReadErrInfo(dev_type, dev_index, -1, &errinfo);
+        lua_pushinteger(L, errinfo.ErrCode);
+        return 2;
+    }
 
-     lua_pushinteger(L, CAN_OK);
-     return 1;
+    lua_pushinteger(L, CAN_OK);
+    return 1;
 }
 
 static int can_init_can(lua_State *L)
@@ -158,10 +153,10 @@ static int can_init_can(lua_State *L)
     initConfig.Timing1 = baudRateTiming1(baud);
     initConfig.Mode = 0;
 
-    if(needSetBaudBySetReference(dev_type))
+    if (needSetBaudBySetReference(dev_type))
     {
         baud2 = getBoudForSetReference(baud);
-        if(STATUS_ERR == VCI_SetReference(dev_type, dev_index, can_index, 0, &baud2))
+        if (STATUS_ERR == VCI_SetReference(dev_type, dev_index, can_index, 0, &baud2))
         {
             lua_pushinteger(L, CAN_ERR);
             VCI_ReadErrInfo(dev_type, dev_index, can_index, &errinfo);
@@ -169,7 +164,7 @@ static int can_init_can(lua_State *L)
             return 2;
         }
     }
-    if(STATUS_ERR == VCI_InitCAN(dev_type, dev_index, can_index, &initConfig))
+    if (STATUS_ERR == VCI_InitCAN(dev_type, dev_index, can_index, &initConfig))
     {
         lua_pushinteger(L, CAN_ERR);
         VCI_ReadErrInfo(dev_type, dev_index, can_index, &errinfo);
@@ -191,7 +186,7 @@ static int can_start_can(lua_State *L)
     dev_index = luaL_checkinteger(L, 2);
     can_index = luaL_checkinteger(L, 3);
 
-    if(STATUS_ERR == VCI_StartCAN(dev_type, dev_index, can_index))
+    if (STATUS_ERR == VCI_StartCAN(dev_type, dev_index, can_index))
     {
         lua_pushinteger(L, CAN_ERR);
         VCI_ReadErrInfo(dev_type, dev_index, can_index, &errinfo);
@@ -223,7 +218,7 @@ static int can_open(lua_State *L)
     initConfig.Timing1 = baudRateTiming1(baud);
     initConfig.Mode = 0;
 
-    if(STATUS_ERR ==  VCI_OpenDevice(dev_type, dev_index, 0))
+    if (STATUS_ERR == VCI_OpenDevice(dev_type, dev_index, 0))
     {
         lua_pushinteger(L, CAN_ERR);
         VCI_ReadErrInfo(dev_type, dev_index, -1, &errinfo);
@@ -231,10 +226,10 @@ static int can_open(lua_State *L)
         return 2;
     }
 
-    if(needSetBaudBySetReference(dev_type))
+    if (needSetBaudBySetReference(dev_type))
     {
         baud2 = getBoudForSetReference(baud);
-        if(STATUS_ERR == VCI_SetReference(dev_type, dev_index, can_index, 0, &baud2))
+        if (STATUS_ERR == VCI_SetReference(dev_type, dev_index, can_index, 0, &baud2))
         {
             lua_pushinteger(L, CAN_ERR);
             VCI_ReadErrInfo(dev_type, dev_index, can_index, &errinfo);
@@ -242,14 +237,14 @@ static int can_open(lua_State *L)
             return 2;
         }
     }
-    if(STATUS_ERR == VCI_InitCAN(dev_type, dev_index, can_index, &initConfig))
+    if (STATUS_ERR == VCI_InitCAN(dev_type, dev_index, can_index, &initConfig))
     {
         lua_pushinteger(L, CAN_ERR);
         VCI_ReadErrInfo(dev_type, dev_index, can_index, &errinfo);
         lua_pushinteger(L, errinfo.ErrCode);
         return 2;
     }
-    if(STATUS_ERR == VCI_StartCAN(dev_type, dev_index, can_index))
+    if (STATUS_ERR == VCI_StartCAN(dev_type, dev_index, can_index))
     {
         lua_pushinteger(L, CAN_ERR);
         VCI_ReadErrInfo(dev_type, dev_index, can_index, &errinfo);
@@ -274,12 +269,13 @@ static int can_read(lua_State *L)
     can_index = luaL_checkinteger(L, 3);
 
     len = VCI_GetReceiveNum(dev_type, dev_index, can_index);
-    if (len == 0) {
+    if (len == 0)
+    {
         lua_createtable(L, len, 0);
         return 1;
     }
 
-    len=VCI_Receive(dev_type,dev_index,can_index,recvBuf,REC_BUFF_SIZE,200);
+    len = VCI_Receive(dev_type, dev_index, can_index, recvBuf, REC_BUFF_SIZE, 200);
     if (len == 0xFFFFFFFF)
     {
         VCI_ReadErrInfo(dev_type, dev_index, can_index, &errinfo);
@@ -289,7 +285,7 @@ static int can_read(lua_State *L)
     }
 
     lua_createtable(L, len, 0);
-    for(i = 0; i < len; i++)
+    for (i = 0; i < len; i++)
     {
         lua_createtable(L, 0, 7);
 
@@ -312,7 +308,7 @@ static int can_read(lua_State *L)
         lua_setfield(L, -2, "datalen");
 
         lua_createtable(L, recvBuf[i].DataLen, 0);
-        for(j = 0; j < recvBuf[i].DataLen; j++)
+        for (j = 0; j < recvBuf[i].DataLen; j++)
         {
             lua_pushinteger(L, recvBuf[i].Data[j]);
             lua_rawseti(L, -2, j + 1);
@@ -356,7 +352,7 @@ static int can_write(lua_State *L)
     lua_pop(L, 1);
 
     lua_getfield(L, 4, "data");
-    for(i = 0; i < sendBuf.DataLen; i++)
+    for (i = 0; i < sendBuf.DataLen; i++)
     {
         lua_rawgeti(L, -1, i + 1);
         sendBuf.Data[i] = luaL_checkinteger(L, -1);
@@ -370,7 +366,8 @@ static int can_write(lua_State *L)
     return 2;
 }
 
-static int can_error(lua_State *L) {
+static int can_error(lua_State *L)
+{
     int dev_type, dev_index, can_index;
     VCI_ERR_INFO errinfo;
 
@@ -392,13 +389,13 @@ static const luaL_Reg canlib[] = {
     {"read", can_read},
     {"write", can_write},
     {"error", can_error},
-    {NULL, NULL}
-};
+    {NULL, NULL}};
 
 /*
 ** Open can library
 */
-int luaopen_zlgcan (lua_State *L) {
+int luaopen_zlgcan(lua_State *L)
+{
     luaL_newlib(L, canlib);
     return 1;
 }

@@ -6,16 +6,16 @@
 class SleeperThread : public QThread
 {
     Q_OBJECT
-public:
+  public:
     explicit SleeperThread(QObject *parent = 0);
 
     static void msleep(unsigned long msecs);
     static void usleep(unsigned long usecs);
     static void sleep(unsigned long secs);
 
-signals:
+  signals:
 
-public slots:
+  public slots:
 };
 
 #endif // SLEEPERTHREAD_H

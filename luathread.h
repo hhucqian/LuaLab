@@ -7,17 +7,17 @@
 class LuaThread : public QThread
 {
     Q_OBJECT
-public:
+  public:
     explicit LuaThread(lua_State *L, QString file);
 
-signals:
+  signals:
 
-protected:
+  protected:
     void run();
 
-public slots:
+  public slots:
 
-private:
+  private:
     lua_State *m_L;
     QString m_filename;
 };

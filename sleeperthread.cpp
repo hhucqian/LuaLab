@@ -2,7 +2,6 @@
 
 SleeperThread::SleeperThread(QObject *parent) : QThread(parent)
 {
-
 }
 
 void SleeperThread::msleep(unsigned long msecs)

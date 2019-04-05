@@ -1,19 +1,19 @@
 #ifndef LUAEVENTLISTMODEL_H
 #define LUAEVENTLISTMODEL_H
 
-#include <QObject>
-#include <QList>
 #include <QAbstractListModel>
+#include <QList>
+#include <QObject>
 #include <QReadWriteLock>
-#include <QWriteLocker>
 #include <QTimerEvent>
+#include <QWriteLocker>
 
 #include "luamessage.h"
 
 class LuaMessageListModel : public QAbstractListModel
 {
     Q_OBJECT
-public:
+  public:
     explicit LuaMessageListModel(QObject *parent = 0);
     void addMessage(const LuaMessage &msg);
 
@@ -26,14 +26,14 @@ public:
     int showMsgCount() const { return this->m_show_msg.size(); };
     int allMsgCount() const { return this->m_all_msg.size(); };
 
-protected:
-    void timerEvent(QTimerEvent * event );
+  protected:
+    void timerEvent(QTimerEvent *event);
 
-signals:
+  signals:
 
-public slots:
+  public slots:
 
-private:
+  private:
     QList<LuaMessage> m_show_msg;
     QList<LuaMessage> m_all_msg;
     QList<LuaMessage> m_temp_msg;
@@ -44,7 +44,6 @@ private:
 
     QReadWriteLock m_rw_lock;
     QReadWriteLock m_temp_lock;
-
 };
 
 #endif // LUAEVENTLISTMODEL_H

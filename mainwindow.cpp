@@ -1,23 +1,20 @@
 #include "mainwindow.h"
 
-#include <QList>
-#include <QDebug>
-#include <QMessageBox>
-#include <QFileDialog>
-#include <QVBoxLayout>
-#include <QToolBar>
-#include <QMessageBox>
-#include <QTextEdit>
-#include <QDir>
-#include <QStringList>
-#include <QDebug>
-#include <QProcess>
 #include <QApplication>
+#include <QDebug>
+#include <QDir>
+#include <QFileDialog>
+#include <QList>
+#include <QMessageBox>
+#include <QProcess>
+#include <QStringList>
+#include <QTextEdit>
+#include <QToolBar>
+#include <QVBoxLayout>
 
-#include "luavalueedit.h"
 #include "luamessage/luamessagewidget.h"
+#include "luavalueedit.h"
 #include "propertyeditor/propertyeditor.h"
-
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent),
@@ -70,11 +67,13 @@ void MainWindow::setupUI()
 
     this->restoreGeometry(this->m_settings.value("gui/main").toByteArray());
     this->restoreState(this->m_settings.value("gui/state").toByteArray());
-    for(int i = 0; i < this->m_docks.size(); ++i) {
+    for (int i = 0; i < this->m_docks.size(); ++i)
+    {
         this->restoreDockWidget(this->m_docks.at(i));
     }
     int index = this->m_settings.value("gui/script", 0).toInt();
-    if(index > this->m_cbx_scripts->count()) {
+    if (index > this->m_cbx_scripts->count())
+    {
         index = 0;
     }
     this->m_cbx_scripts->setCurrentIndex(index);
@@ -96,12 +95,13 @@ void MainWindow::saveConfigFile()
 
 void MainWindow::onLuaEvent(LuaEvent event)
 {
-    switch (event.Type) {
+    switch (event.Type)
+    {
     case LuaEvent::EVENT_SET_TITLE:
         this->setWindowTitle(QString("%1 - %2").arg(this->m_appname, event.ExtraString));
         break;
     case LuaEvent::EVENT_SET_FN_TEXT:
-        this->m_fn_actions.at(event.ExtraInt -1)->setText(event.ExtraString);
+        this->m_fn_actions.at(event.ExtraInt - 1)->setText(event.ExtraString);
         break;
     default:
         break;
@@ -110,7 +110,7 @@ void MainWindow::onLuaEvent(LuaEvent event)
 
 void MainWindow::onLuaScriptError(QString msg)
 {
-   QMessageBox::warning(this, QString::fromUtf8("脚本错误"), msg);
+    QMessageBox::warning(this, QString::fromUtf8("脚本错误"), msg);
 }
 
 void MainWindow::onLuaStateChange(QString, bool isRunning)
@@ -118,30 +118,38 @@ void MainWindow::onLuaStateChange(QString, bool isRunning)
     this->m_is_running = isRunning;
     this->m_is_pause = false;
     this->updateUI();
-    for(int i = 0; i < this->m_fn_count; ++i) {
+    for (int i = 0; i < this->m_fn_count; ++i)
+    {
         this->m_fn_actions.at(i)->setText(QString("F%1").arg(i + 1));
     }
 }
 
 void MainWindow::updateUI()
 {
-    if(this->m_is_running) {
+    if (this->m_is_running)
+    {
         this->m_lbl_script_state->setText(QString::fromUtf8("<font color='green'>运行中</font>"));
         this->m_run_action->setText(QString::fromUtf8("停止"));
-    } else {
+    }
+    else
+    {
         this->m_lbl_script_state->setText(QString::fromUtf8("未运行"));
         this->m_run_action->setText(QString::fromUtf8("运行"));
     }
-    if(this->m_is_pause) {
+    if (this->m_is_pause)
+    {
         this->m_paush_action->setText(QString::fromUtf8("继续"));
-    } else {
+    }
+    else
+    {
         this->m_paush_action->setText(QString::fromUtf8("暂停"));
     }
 }
 
 void MainWindow::createFnToolBar()
 {
-    for(int i = 0; i < this->m_fn_count; ++i) {
+    for (int i = 0; i < this->m_fn_count; ++i)
+    {
         QAction *item = new QAction(QString("F%1").arg(i + 1), this);
         this->m_fn_actions.append(item);
         connect(item, SIGNAL(triggered(bool)), this, SLOT(onFnClick()));
@@ -156,8 +164,10 @@ void MainWindow::createFnToolBar()
 
 void MainWindow::onFnClick()
 {
-    for(int i = 0; i < this->m_fn_count; ++i) {
-        if(sender() == this->m_fn_actions.at(i)) {
+    for (int i = 0; i < this->m_fn_count; ++i)
+    {
+        if (sender() == this->m_fn_actions.at(i))
+        {
             LuaEvent event;
             event.Type = LuaEvent::EVENT_FUN;
             event.ExtraType = LuaEvent::EXTRA_INT;
@@ -173,8 +183,10 @@ QList<QString> MainWindow::getScriptFileNames()
     QDir dir("script");
     QStringList files = dir.entryList(QDir::Files);
     QString filename;
-    foreach (filename, files) {
-        if(filename.endsWith(".lua")) {
+    foreach (filename, files)
+    {
+        if (filename.endsWith(".lua"))
+        {
             res.append(filename);
         }
     }
@@ -212,20 +224,27 @@ void MainWindow::createScriptToolBar()
 
 void MainWindow::onScriptRunClick()
 {
-    if(gL->isRunning()) {
+    if (gL->isRunning())
+    {
         gL->stopScript();
-    } else {
+    }
+    else
+    {
         gL->runLuaThread("script/" + this->m_cbx_scripts->currentText());
     }
 }
 
 void MainWindow::onScriptPauseClick()
 {
-    if(gL->isRunning()) {
-        if(this->m_is_pause) {
+    if (gL->isRunning())
+    {
+        if (this->m_is_pause)
+        {
             gL->resumeScript();
             this->m_is_pause = false;
-        } else {
+        }
+        else
+        {
             gL->pauseScript();
             this->m_is_pause = true;
         }
@@ -258,14 +277,16 @@ void MainWindow::createMenu()
     menu = this->menuBar()->addMenu(QString::fromUtf8("Fn 信号"));
     menu->addActions(this->m_fn_actions);
     menu = this->menuBar()->addMenu(QString::fromUtf8("视图 (&V)"));
-    for(int i = 0; i < this->m_docks.size(); ++i) {
+    for (int i = 0; i < this->m_docks.size(); ++i)
+    {
         menu->addAction(this->m_docks.at(i)->toggleViewAction());
     }
     menu->addSeparator();
-    for(int i = 0; i < this->m_tool_bars.size(); ++i) {
+    for (int i = 0; i < this->m_tool_bars.size(); ++i)
+    {
         menu->addAction(this->m_tool_bars.at(i)->toggleViewAction());
     }
-    if(QFile::exists("tools.txt"))
+    if (QFile::exists("tools.txt"))
     {
         this->createToolsMenu();
     }
@@ -281,16 +302,21 @@ void MainWindow::createToolsMenu()
     file.close();
     QStringList lines = file_content.split("\n", QString::SkipEmptyParts);
     int index = 1;
-    for(int i = 0; i < lines.size(); ++i)
+    for (int i = 0; i < lines.size(); ++i)
     {
-        QStringList parts = lines.at(i).split("#",  QString::SkipEmptyParts);
-        if(parts.length() > 1)
+        QStringList parts = lines.at(i).split("#", QString::SkipEmptyParts);
+        if (parts.length() > 1)
         {
-            if(index < 10) {
+            if (index < 10)
+            {
                 action = menu->addAction(QString("%1 (&%2)").arg(parts[0]).arg(index));
-            } else if('Z' - 'A' - index + 10 >= 0) {
+            }
+            else if ('Z' - 'A' - index + 10 >= 0)
+            {
                 action = menu->addAction(QString("%1 (&%2)").arg(parts[0]).arg((char)('A' + index - 10)));
-            } else {
+            }
+            else
+            {
                 action = menu->addAction(QString("%1").arg(parts[0]));
             }
             action->setData(parts[1]);
@@ -331,4 +357,3 @@ void MainWindow::onStopMediaClick()
 {
     gL->triggerStopMedia();
 }
-

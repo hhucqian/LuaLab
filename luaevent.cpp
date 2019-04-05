@@ -2,7 +2,6 @@
 
 LuaEvent::LuaEvent() : QObject(), ExtraInt(0)
 {
-
 }
 
 LuaEvent &LuaEvent::operator=(const LuaEvent &e)

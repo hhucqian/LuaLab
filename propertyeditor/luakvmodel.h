@@ -2,19 +2,19 @@
 #define LUAKVMODEL_H
 
 #include <QAbstractTableModel>
-#include <QList>
-#include <QHash>
-#include <QColor>
 #include <QBrush>
-#include <QVariant>
+#include <QColor>
+#include <QHash>
+#include <QList>
 #include <QReadWriteLock>
 #include <QStringList>
 #include <QTimerEvent>
+#include <QVariant>
 
 class LuaKVModel : public QAbstractTableModel
 {
     Q_OBJECT
-public:
+  public:
     explicit LuaKVModel(QObject *parent = 0);
     int columnCount(const QModelIndex &parent) const;
     int rowCount(const QModelIndex &parent) const;
@@ -24,14 +24,14 @@ public:
     void clearKV();
     void setKV(const QString &key, const QString &value, const QString &color);
 
-signals:
+  signals:
 
-protected:
+  protected:
     void timerEvent(QTimerEvent *event);
 
-public slots:
+  public slots:
 
-private:
+  private:
     QList<QString> m_keys;
     QHash<QString, QString> m_values;
     QHash<QString, QBrush> m_colors;
@@ -39,7 +39,6 @@ private:
 
     QReadWriteLock m_lock;
     bool m_need_reset;
-
 };
 
 #endif // LUAKVMODEL_H

@@ -4,6 +4,6 @@
 #include "Lua/lua.hpp"
 
 #define LUA_GUINAME "gui"
-LUAMOD_API int (luaopen_gui) (lua_State *L);
+LUAMOD_API int(luaopen_gui)(lua_State *L);
 
 #endif // LGUILIB_H

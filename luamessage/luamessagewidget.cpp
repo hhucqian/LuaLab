@@ -1,12 +1,12 @@
 #include "luamessagewidget.h"
+#include "../flowlayout.h"
+#include "../luaengine.h"
+#include "luamessageview.h"
 #include <QDebug>
+#include <QHBoxLayout>
 #include <QListView>
 #include <QPushButton>
-#include <QHBoxLayout>
 #include <QVBoxLayout>
-#include "../luaengine.h"
-#include "../flowlayout.h"
-#include "luamessageview.h"
 
 LuaMessageWidget::LuaMessageWidget(QWidget *parent) : QWidget(parent)
 {
@@ -44,7 +44,7 @@ void LuaMessageWidget::setupUI()
     this->setLayout(main_layout);
     this->m_type_layout = type_layout;
 
-    connect(gL, SIGNAL(PushMsg(int,QString)), this, SLOT(onGetMsg(int,QString)));
+    connect(gL, SIGNAL(PushMsg(int, QString)), this, SLOT(onGetMsg(int, QString)));
     connect(gL, SIGNAL(AddMsgType(QString)), this, SLOT(onAddMsgType(QString)));
     connect(gL, SIGNAL(LuaStateChange(QString, bool)), this, SLOT(onLuaStateChange(QString, bool)));
     connect(cbx, SIGNAL(clicked(bool)), this, SLOT(onCbxClick(bool)));
@@ -67,29 +67,41 @@ void LuaMessageWidget::onAddMsgType(QString name)
     this->m_model.setShowTypes(this->getShowTypes());
     connect(cbx, SIGNAL(clicked(bool)), this, SLOT(onCbxClick(bool)));
 
-    for(int i = 0; i < this->m_msg_types.size() && i < this->m_check_state.value(this->m_current_script_id)->size(); ++i) {
+    for (int i = 0; i < this->m_msg_types.size() && i < this->m_check_state.value(this->m_current_script_id)->size(); ++i)
+    {
         this->m_type_cbx.at(i)->setChecked(this->m_check_state.value(this->m_current_script_id)->at(i));
     }
 }
 
 void LuaMessageWidget::onCbxClick(bool checked)
 {
-    if(sender() == this->m_type_cbx.at(0)) {
-        for(int i = 1; i < this->m_type_cbx.size(); ++i) {
+    if (sender() == this->m_type_cbx.at(0))
+    {
+        for (int i = 1; i < this->m_type_cbx.size(); ++i)
+        {
             this->m_type_cbx.at(i)->setChecked(checked);
         }
-    } else {
+    }
+    else
+    {
         int checkcount = 0;
-        for(int i = 1; i < this->m_type_cbx.size(); ++i) {
-            if(this->m_type_cbx.at(i)->isChecked()) {
+        for (int i = 1; i < this->m_type_cbx.size(); ++i)
+        {
+            if (this->m_type_cbx.at(i)->isChecked())
+            {
                 ++checkcount;
             }
         }
-        if(checkcount == 0) {
+        if (checkcount == 0)
+        {
             this->m_type_cbx.at(0)->setCheckState(Qt::Unchecked);
-        } else if(checkcount == this->m_type_cbx.size() - 1) {
+        }
+        else if (checkcount == this->m_type_cbx.size() - 1)
+        {
             this->m_type_cbx.at(0)->setCheckState(Qt::Checked);
-        } else {
+        }
+        else
+        {
             this->m_type_cbx.at(0)->setCheckState(Qt::PartiallyChecked);
         }
     }
@@ -100,12 +112,15 @@ void LuaMessageWidget::onCbxClick(bool checked)
 QList<int> LuaMessageWidget::getShowTypes()
 {
     QList<int> res;
-    for(int i = 1; i < this->m_type_cbx.size(); ++i) {
-        if(this->m_type_cbx.at(i)->isChecked()) {
+    for (int i = 1; i < this->m_type_cbx.size(); ++i)
+    {
+        if (this->m_type_cbx.at(i)->isChecked())
+        {
             res.append(i);
         }
     }
-    if(res.size() == this->m_type_cbx.size() - 1) {
+    if (res.size() == this->m_type_cbx.size() - 1)
+    {
         res.clear();
     }
     return res;
@@ -114,22 +129,29 @@ QList<int> LuaMessageWidget::getShowTypes()
 void LuaMessageWidget::onLuaStateChange(QString id, bool isRunning)
 {
     this->m_current_script_id = id;
-    if(!this->m_check_state.contains(id)) {
+    if (!this->m_check_state.contains(id))
+    {
         this->m_check_state.insert(id, new QList<bool>());
     }
-    if(isRunning) {
+    if (isRunning)
+    {
         this->m_model.clearDataAndTypes();
-        while(this->m_msg_types.size() > 1) {
+        while (this->m_msg_types.size() > 1)
+        {
             this->m_msg_types.removeLast();
         }
-        while(this->m_type_cbx.size() > 1) {
+        while (this->m_type_cbx.size() > 1)
+        {
             this->m_type_layout->removeWidget(this->m_type_cbx.last());
             this->m_type_cbx.last()->deleteLater();
             this->m_type_cbx.removeLast();
         }
-    } else {
+    }
+    else
+    {
         this->m_check_state.value(this->m_current_script_id)->clear();
-        for(int i = 0; i < this->m_type_cbx.size(); ++i) {
+        for (int i = 0; i < this->m_type_cbx.size(); ++i)
+        {
             this->m_check_state.value(this->m_current_script_id)->append(this->m_type_cbx[i]->isChecked());
         }
     }

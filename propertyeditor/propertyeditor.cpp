@@ -1,15 +1,15 @@
 #include "propertyeditor.h"
-#include "luakvmodel.h"
 #include "../luaengine.h"
+#include "luakvmodel.h"
+#include <QAbstractItemView>
 #include <QHBoxLayout>
 #include <QHeaderView>
 #include <QTableWidget>
-#include <QAbstractItemView>
 
 PropertyEditor::PropertyEditor(QWidget *parent) : QWidget(parent)
 {
     this->setupUI();
-    connect(gL, SIGNAL(SetKVEvent(QString,QString,QString)), this, SLOT(onSetKV(QString,QString,QString)));
+    connect(gL, SIGNAL(SetKVEvent(QString, QString, QString)), this, SLOT(onSetKV(QString, QString, QString)));
     connect(gL, SIGNAL(LuaStateChange(QString, bool)), this, SLOT(onLuaStateChange(QString, bool)));
 }
 
@@ -38,7 +38,7 @@ void PropertyEditor::onSetKV(QString key, QString value, QString color)
 
 void PropertyEditor::onLuaStateChange(QString, bool isRunning)
 {
-    if(isRunning)
+    if (isRunning)
     {
         this->m_model->clearKV();
     }

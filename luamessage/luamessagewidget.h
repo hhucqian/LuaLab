@@ -1,38 +1,38 @@
 #ifndef LUAMESSAGEWIDGET_H
 #define LUAMESSAGEWIDGET_H
 
-#include <QWidget>
-#include <QList>
-#include <QString>
+#include "luamessagelistmodel.h"
 #include <QCheckBox>
 #include <QLayout>
+#include <QList>
 #include <QListView>
+#include <QString>
 #include <QVector>
-#include "luamessagelistmodel.h"
+#include <QWidget>
 
 class LuaMessageWidget : public QWidget
 {
     Q_OBJECT
-public:
+  public:
     explicit LuaMessageWidget(QWidget *parent = 0);
 
-signals:
+  signals:
 
-private:
+  private:
     void setupUI();
 
     LuaMessageListModel m_model;
     QList<QString> m_msg_types;
-    QList<QCheckBox*> m_type_cbx;
+    QList<QCheckBox *> m_type_cbx;
 
     QLayout *m_type_layout;
     QListView *m_list_view;
 
     QList<int> getShowTypes();
-    QHash<QString, QList<bool>*> m_check_state;
+    QHash<QString, QList<bool> *> m_check_state;
     QString m_current_script_id;
 
-public slots:
+  public slots:
     void onGetMsg(int type, QString msg);
     void onAddMsgType(QString name);
     void onCbxClick(bool checked);

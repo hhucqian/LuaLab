@@ -1,16 +1,17 @@
 #ifndef LUAEVENT_H
 #define LUAEVENT_H
 
+#include <QHash>
 #include <QObject>
 #include <QString>
-#include <QHash>
 
 class LuaEvent : public QObject
 {
     Q_OBJECT
-public:
+  public:
     LuaEvent();
-    enum LuaEventType {
+    enum LuaEventType
+    {
         EVENT_NONE = 0,
         EVENT_FUN,
         EVENT_EXIT,
@@ -20,7 +21,8 @@ public:
         EVENT_SET_FN_TEXT,
         EVENT_END
     };
-    enum LuaEventExraType {
+    enum LuaEventExraType
+    {
         EXTRA_NONE = 0,
         EXTRA_INT,
         EXTRA_STRING,
@@ -34,7 +36,7 @@ public:
     QString ExtraString;
     QHash<QString, QString> ExtraHash;
 
-    LuaEvent(const LuaEvent &e) : QObject(), Type(e.Type), ExtraType(e.ExtraType), ExtraInt(e.ExtraInt), ExtraString(e.ExtraString), ExtraHash(e.ExtraHash){}
+    LuaEvent(const LuaEvent &e) : QObject(), Type(e.Type), ExtraType(e.ExtraType), ExtraInt(e.ExtraInt), ExtraString(e.ExtraString), ExtraHash(e.ExtraHash) {}
     LuaEvent &operator=(const LuaEvent &e);
 };
 

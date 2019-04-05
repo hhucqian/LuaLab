@@ -1,21 +1,21 @@
 #ifndef LUAMESSAGEVIEW_H
 #define LUAMESSAGEVIEW_H
 
-#include <QListView>
 #include <QKeyEvent>
+#include <QListView>
 
 class LuaMessageView : public QListView
 {
     Q_OBJECT
-public:
+  public:
     explicit LuaMessageView(QWidget *parent = 0);
 
-protected:
+  protected:
     void keyPressEvent(QKeyEvent *event);
 
-signals:
+  signals:
 
-public slots:
+  public slots:
 };
 
 #endif // LUAMESSAGEVIEW_H

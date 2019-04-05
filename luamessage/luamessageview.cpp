@@ -9,7 +9,8 @@ LuaMessageView::LuaMessageView(QWidget *parent) : QListView(parent)
 
 void LuaMessageView::keyPressEvent(QKeyEvent *event)
 {
-    if(event->matches(QKeySequence::Copy)) {
+    if (event->matches(QKeySequence::Copy))
+    {
         int itemsCount = this->selectedIndexes().size();
         QStringList strings;
         for (int i = 0; i < itemsCount; ++i)

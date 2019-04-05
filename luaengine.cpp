@@ -1,8 +1,8 @@
 #include "luaengine.h"
 
-#include "zlgcan/lzlgcanlib.h"
-#include "propertyeditor/luakvmodel.h"
 #include "lguilib.h"
+#include "propertyeditor/luakvmodel.h"
+#include "zlgcan/lzlgcanlib.h"
 
 #include <QApplication>
 #include <QClipboard>
@@ -17,15 +17,15 @@ LuaEngine::LuaEngine(QObject *parent) : QObject(parent)
     connect(this, SIGNAL(StopMediaEvent()), this, SLOT(onStopMedia()));
 }
 
-LuaEngine* LuaEngine::Instance()
+LuaEngine *LuaEngine::Instance()
 {
     static LuaEngine *res = new LuaEngine();
     return res;
 }
 
-lua_State* LuaEngine::newLuaThread()
+lua_State *LuaEngine::newLuaThread()
 {
-    lua_State* res = luaL_newstate();
+    lua_State *res = luaL_newstate();
     luaL_openlibs(res);
 
     luaL_requiref(res, LUA_ZLGCANNAME, luaopen_zlgcan, 0);
@@ -44,9 +44,10 @@ void LuaEngine::triggerEvent(LuaEvent &event)
     emit GetLuaEvent(event);
 }
 
-QThread* LuaEngine::runLuaThread(QString filename)
+QThread *LuaEngine::runLuaThread(QString filename)
 {
-    if(this->m_lua_thread == NULL) {
+    if (this->m_lua_thread == NULL)
+    {
         this->m_script_name = filename;
         this->m_events.clear();
         this->newLuaThread();
@@ -141,7 +142,8 @@ void LuaEngine::triggerStopMedia()
 
 void LuaEngine::onPlayMedia(QString file)
 {
-    if(this->m_player.state() == QMediaPlayer::StoppedState){
+    if (this->m_player.state() == QMediaPlayer::StoppedState)
+    {
         this->m_player.setMedia(QUrl::fromLocalFile(file));
         this->m_player.setVolume(50);
         this->m_player.play();
